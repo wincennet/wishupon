@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 
@@ -20,12 +20,17 @@ export function PieceCard({
 }) {
   const soldOut = product.stock_qty <= 0;
   const cardNumber = String(index + 1).padStart(2, "0");
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
+      /* The reveal moves the card, it never hides it. Fading in from opacity 0
+         makes the whole shop depend on an IntersectionObserver firing — and
+         when it does not, the wall renders blank with the products silently
+         missing. A card that never animates just sits 12px lower. */
+      initial={reduceMotion ? false : { y: 12 }}
+      whileInView={{ y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
       /* Damped, physical settle — the card comes to rest on its pin.
          Nothing here moves like software. */
       transition={{ type: "spring", stiffness: 120, damping: 18, mass: 0.9 }}
