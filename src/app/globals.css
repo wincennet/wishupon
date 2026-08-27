@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/* Palette from design/color-palette.md — deliberately warm, never pure
+   black/white, so bead and metal photography looks inviting not clinical. */
+@theme {
+  --color-background: #faf7f5;
+  --color-primary: #5b3a7a;
+  --color-primary-dark: #452c5c;
+  --color-accent: #c9a9e0;
+  --color-accent-soft: #ede2f6;
+  --color-ink: #2a1b3d;
+  --color-ink-soft: #6b5b7d;
+  --color-neutral: #d9c9b8;
+  --color-neutral-soft: #efe6dc;
+
+  --font-display: var(--font-display-face), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-body-face), ui-sans-serif, system-ui, sans-serif;
+
+  /* The board the cards are pinned to, and the card's own cast shadow. */
+  --shadow-card: 0 1px 2px rgba(42, 27, 61, 0.08), 0 6px 16px -6px rgba(42, 27, 61, 0.18);
+  --shadow-card-lifted: 0 2px 4px rgba(42, 27, 61, 0.1), 0 18px 36px -12px rgba(42, 27, 61, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* The site is intentionally light-only: the warm cream ground is part of the
+   brand, and a dark inversion would fight the product photography. */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

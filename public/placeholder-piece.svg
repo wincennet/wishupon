@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Photograph coming soon">
+  <rect width="400" height="400" fill="#efe6dc"/>
+  <g fill="none" stroke="#5b3a7a" stroke-opacity="0.3" stroke-width="3">
+    <circle cx="200" cy="188" r="62"/>
+  </g>
+  <g fill="#5b3a7a" fill-opacity="0.22">
+    <circle cx="200" cy="126" r="11"/><circle cx="244" cy="144" r="11"/>
+    <circle cx="262" cy="188" r="11"/><circle cx="244" cy="232" r="11"/>
+    <circle cx="200" cy="250" r="11"/><circle cx="156" cy="232" r="11"/>
+    <circle cx="138" cy="188" r="11"/><circle cx="156" cy="144" r="11"/>
+  </g>
+  <text x="200" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" letter-spacing="2.5" fill="#7a6a57">PHOTOGRAPH COMING SOON</text>
+</svg>

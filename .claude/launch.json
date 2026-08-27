@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wishupon-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "C:\\Users\\hasan\\OneDrive\\Desktop\\wishupon",
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    }
+  ]
+}
