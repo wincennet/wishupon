@@ -25,6 +25,8 @@ type Bead = {
   /** Staggers the release so the sleeve unravels rather than exploding. */
   delay: number;
   drift: number;
+  /** Own phase, so the field breathes unevenly rather than in unison. */
+  phase: number;
 };
 
 const RING_RADIUS = 1.5;
@@ -73,6 +75,7 @@ function useBeads(stations: number, perStation: number, columnCount: number): Be
           scale: 0.1 + ((i * 7 + j * 3) % 5) * 0.011,
           delay: (i / stations) * 0.35,
           drift: (((i * 31 + j * 19) % 100) / 100) * 0.6 + 0.2,
+          phase: (((i * 17 + j * 41) % 100) / 100) * Math.PI * 2,
         });
       }
     }
@@ -91,12 +94,14 @@ function Beads({
   stations,
   perStation,
   columns,
+  quality,
 }: {
   progressRef: React.RefObject<number>;
   spinRef: React.RefObject<number>;
   stations: number;
   perStation: number;
   columns: number;
+  quality: "high" | "low";
 }) {
   const beads = useBeads(stations, perStation, columns);
   const { size } = useThree();
@@ -106,6 +111,20 @@ function Beads({
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const scratch = useMemo(() => new THREE.Vector3(), []);
   const spun = useRef(0);
+
+  /** Live position and velocity for the loose-bead physics. Kept in flat
+   *  arrays and mutated in place: allocating vectors per bead per frame would
+   *  hand the garbage collector 300 objects sixty times a second. */
+  const live = useRef<{ pos: Float32Array; vel: Float32Array; on: boolean } | null>(
+    null
+  );
+  useEffect(() => {
+    live.current = {
+      pos: new Float32Array(beads.length * 3),
+      vel: new Float32Array(beads.length * 3),
+      on: false,
+    };
+  }, [beads]);
 
   const coloured = useRef(false);
   useEffect(() => {
@@ -133,7 +152,10 @@ function Beads({
       // over as it settles, and both fade out as the sleeve comes apart.
       spun.current += (spinRef.current ?? 0);
       spinRef.current = (spinRef.current ?? 0) * 0.9;
-      groupRef.current.rotation.y = spun.current + t * 0.15 * (1 - p);
+      // Scaling the idle spin by (1 - p) alone left the field frozen once the
+      // scroll finished. A floor keeps it turning gently forever.
+      const idleSpin = 0.15 * (1 - p) + 0.03 * p;
+      groupRef.current.rotation.y = spun.current + t * idleSpin;
 
       // While it is a bracelet it sits beside the headline on a wide screen
       // rather than on top of it; the columns need the full width, so it
@@ -155,7 +177,7 @@ function Beads({
     // Solid while it is a piece of jewellery; once the beads are loose behind
     // the shop they drop back to ambience so the photography stays the thing
     // you look at.
-    const beadMaterial = mesh.material as THREE.MeshPhysicalMaterial;
+    const beadMaterial = mesh.material as THREE.MeshStandardMaterial;
     beadMaterial.transparent = p > 0.02;
     beadMaterial.opacity = 1 - p * 0.72;
     beadMaterial.depthWrite = p < 0.5;
@@ -168,8 +190,95 @@ function Beads({
       wireRef.current.visible = wire.opacity > 0.01;
     }
 
+    const phys = live.current;
+    // Once the sleeve has fully opened the beads stop being animated along a
+    // path and start being simulated: each one falls under gravity and bounces
+    // off the edges of the frame, so the field keeps moving indefinitely
+    // instead of settling into a still image.
+    const loose = p > 0.995 && phys !== null;
+
+    if (loose && !phys!.on) {
+      // Hand over from the scripted layout to the simulation, seeding each
+      // bead with its own direction so they scatter rather than fall in step.
+      for (let i = 0; i < beads.length; i++) {
+        const bead = beads[i];
+        const a = bead.phase;
+        phys!.pos[i * 3] = bead.column.x;
+        phys!.pos[i * 3 + 1] = bead.column.y;
+        phys!.pos[i * 3 + 2] = bead.column.z;
+        phys!.vel[i * 3] = Math.cos(a) * (0.5 + bead.drift * 0.7);
+        phys!.vel[i * 3 + 1] = Math.sin(a * 1.7) * 0.9;
+        phys!.vel[i * 3 + 2] = Math.sin(a) * 0.35;
+      }
+      phys!.on = true;
+    } else if (!loose && phys) {
+      phys.on = false;
+    }
+
+    // A tab left in the background hands back a huge delta on return, which
+    // would fling every bead out of frame in one step.
+    const dt = Math.min(delta, 1 / 30);
+
+    const X_BOUND = 8.4;
+    const Y_FLOOR = -5.4;
+    const Y_CEIL = 5.4;
+    const Z_NEAR = -3.2;
+    const Z_FAR = -11;
+    const GRAVITY = -2.4;
+    const RESTITUTION = 0.74;
+
     for (let i = 0; i < beads.length; i++) {
       const bead = beads[i];
+
+      if (loose) {
+        const ix = i * 3;
+        phys!.vel[ix + 1] += GRAVITY * dt;
+
+        phys!.pos[ix] += phys!.vel[ix] * dt;
+        phys!.pos[ix + 1] += phys!.vel[ix + 1] * dt;
+        phys!.pos[ix + 2] += phys!.vel[ix + 2] * dt;
+
+        // Floor contact. A bead with energy left bounces; one that has spent
+        // itself is dropped in again from the top somewhere new, so the field
+        // keeps raining instead of silting up along the bottom edge.
+        if (phys!.pos[ix + 1] < Y_FLOOR) {
+          if (Math.abs(phys!.vel[ix + 1]) < 1.1) {
+            phys!.pos[ix] = (Math.random() - 0.5) * 2 * X_BOUND;
+            phys!.pos[ix + 1] = Y_CEIL;
+            phys!.pos[ix + 2] = Z_FAR + Math.random() * (Z_NEAR - Z_FAR);
+            phys!.vel[ix] = (Math.random() - 0.5) * 0.9;
+            phys!.vel[ix + 1] = -0.2 - Math.random() * 0.7;
+            phys!.vel[ix + 2] = (Math.random() - 0.5) * 0.5;
+          } else {
+            phys!.pos[ix + 1] = Y_FLOOR;
+            phys!.vel[ix + 1] = Math.abs(phys!.vel[ix + 1]) * RESTITUTION;
+            // Each bounce throws it off at its own angle rather than straight up.
+            phys!.vel[ix] += (Math.random() - 0.5) * 1.1;
+            phys!.vel[ix + 2] += (Math.random() - 0.5) * 0.6;
+          }
+        }
+        if (phys!.pos[ix + 1] > Y_CEIL + 1) {
+          phys!.pos[ix + 1] = Y_CEIL;
+          phys!.vel[ix + 1] = -Math.abs(phys!.vel[ix + 1]) * RESTITUTION;
+        }
+        if (phys!.pos[ix] < -X_BOUND || phys!.pos[ix] > X_BOUND) {
+          phys!.pos[ix] = THREE.MathUtils.clamp(phys!.pos[ix], -X_BOUND, X_BOUND);
+          phys!.vel[ix] *= -RESTITUTION;
+        }
+        if (phys!.pos[ix + 2] < Z_FAR || phys!.pos[ix + 2] > Z_NEAR) {
+          phys!.pos[ix + 2] = THREE.MathUtils.clamp(phys!.pos[ix + 2], Z_FAR, Z_NEAR);
+          phys!.vel[ix + 2] *= -RESTITUTION;
+        }
+
+        scratch.set(phys!.pos[ix], phys!.pos[ix + 1], phys!.pos[ix + 2]);
+        dummy.position.copy(scratch);
+        dummy.rotation.set(t * 0.4 * bead.drift, t * 0.5 * bead.drift, bead.phase);
+        dummy.scale.setScalar(bead.scale * 0.72);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+        continue;
+      }
+
       const local = THREE.MathUtils.clamp(
         (p - bead.delay) / (1 - bead.delay || 1),
         0,
@@ -179,10 +288,11 @@ function Beads({
 
       scratch.lerpVectors(bead.ring, bead.column, eased);
 
-      // Once loose, beads breathe rather than sit still.
       if (eased > 0) {
-        scratch.y += Math.sin(t * bead.drift + i) * 0.06 * eased;
-        scratch.x += Math.cos(t * bead.drift * 0.8 + i) * 0.04 * eased;
+        const sp = bead.drift;
+        scratch.y += Math.sin(t * sp * 0.85 + bead.phase) * 0.36 * eased;
+        scratch.x += Math.cos(t * sp * 0.55 + bead.phase * 1.7) * 0.2 * eased;
+        scratch.z += Math.sin(t * sp * 0.4 + bead.phase * 0.6) * 0.24 * eased;
       }
 
       dummy.position.copy(scratch);
@@ -217,13 +327,22 @@ function Beads({
 
             Lit entirely by the local rig — no Environment preset, which would
             pull an HDR off a CDN on every page load. */}
-        <meshPhysicalMaterial
-          color="#ffffff"
-          roughness={0.12}
-          metalness={0.05}
-          clearcoat={1}
-          clearcoatRoughness={0.08}
-        />
+        {/* Clearcoat is what makes these read as faceted crystal rather than
+            plastic, and it is the most expensive part of the frame. Phones get
+            the cheaper material — they already run fewer beads at a lower pixel
+            ratio, and the glint is the first thing lost on a small screen
+            anyway. Desktops keep the glass. */}
+        {quality === "high" ? (
+          <meshPhysicalMaterial
+            color="#ffffff"
+            roughness={0.12}
+            metalness={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.08}
+          />
+        ) : (
+          <meshStandardMaterial color="#ffffff" roughness={0.16} metalness={0.12} />
+        )}
       </instancedMesh>
     </group>
   );
@@ -285,6 +404,7 @@ export default function BeadField({
         stations={stations}
         perStation={perStation}
         columns={columns}
+        quality={quality}
       />
     </Canvas>
   );
