@@ -36,7 +36,7 @@ export default async function CategoryPage({
       <SiteHeader />
       <main className="flex-1">
         <header className="board-ground border-b border-ink/10">
-          <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+          <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 2xl:max-w-7xl">
             <div className="flex items-center gap-2">
               <span
                 aria-hidden

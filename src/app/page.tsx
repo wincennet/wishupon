@@ -25,7 +25,7 @@ export default async function HomePage() {
         {/* The three things that are actually true about this shop, stated
             plainly. No invented reviews, no fabricated credentials. */}
         <section className="border-t border-ink/8 bg-neutral-soft">
-          <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:grid-cols-3 sm:px-6">
+          <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:grid-cols-3 sm:px-6 2xl:max-w-7xl">
             {[
               {
                 title: "Made to order",

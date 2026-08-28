@@ -31,11 +31,22 @@ type Bead = {
 
 const RING_RADIUS = 1.5;
 const TUBE_RADIUS = 0.17;
+/** Widest the bracelet reads on screen, used to size it against its column. */
+const SLEEVE_WIDTH = RING_RADIUS * 2 + TUBE_RADIUS * 2;
+
+/** The authored width of the settled field. It is a reference, not a final
+ *  measurement: the frame loop stretches it to whatever the viewport is
+ *  actually wide, so the beads reach both edges of the page on a monitor and
+ *  do not all pile up off-screen on a phone. */
+const COLUMN_SPAN = 8.4;
+/** The depth the settled beads occupy, on average — the plane whose width the
+ *  field has to cover to look like it fills the page. */
+const FIELD_DEPTH = -6.5;
 
 function useBeads(stations: number, perStation: number, columnCount: number): Bead[] {
   return useMemo(() => {
     const beads: Bead[] = [];
-    const columnSpan = 8.4;
+    const columnSpan = COLUMN_SPAN;
 
     for (let i = 0; i < stations; i++) {
       const around = (i / stations) * Math.PI * 2;
@@ -90,6 +101,7 @@ function easeInOut(t: number) {
 
 function Beads({
   progressRef,
+  anchorRef,
   spinRef,
   stations,
   perStation,
@@ -97,6 +109,7 @@ function Beads({
   quality,
 }: {
   progressRef: React.RefObject<number>;
+  anchorRef?: React.RefObject<{ fx: number; fy: number; fw: number } | null>;
   spinRef: React.RefObject<number>;
   stations: number;
   perStation: number;
@@ -104,7 +117,8 @@ function Beads({
   quality: "high" | "low";
 }) {
   const beads = useBeads(stations, perStation, columns);
-  const { size } = useThree();
+  const { size, camera } = useThree();
+  const colTarget = useMemo(() => new THREE.Vector3(), []);
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const wireRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -147,6 +161,22 @@ function Beads({
     const p = progressRef.current ?? 0;
     const t = state.clock.elapsedTime;
 
+    // How much world space one screenful covers at a given depth. Every
+    // placement below is expressed through this, so the field is sized by the
+    // viewport it was handed rather than by constants tuned on one monitor.
+    const cam = camera as THREE.PerspectiveCamera;
+    const halfAngle = Math.tan((cam.fov * Math.PI) / 360);
+    const aspect = size.width / Math.max(size.height, 1);
+    const halfHAt = (depth: number) => halfAngle * (cam.position.z - depth);
+    const halfWAt = (depth: number) => halfHAt(depth) * aspect;
+
+    const fieldHalfW = halfWAt(FIELD_DEPTH);
+    const fieldHalfH = halfHAt(FIELD_DEPTH);
+    // Stretches the authored column layout across the actual frame. Clamped so
+    // a very wide monitor does not tear the columns apart, and a phone does not
+    // squeeze them into a single stripe.
+    const spread = THREE.MathUtils.clamp((fieldHalfW * 2) / COLUMN_SPAN, 0.72, 3.4);
+
     if (groupRef.current) {
       // Drag momentum bleeds off instead of stopping dead; idle drift takes
       // over as it settles, and both fade out as the sleeve comes apart.
@@ -157,20 +187,25 @@ function Beads({
       const idleSpin = 0.15 * (1 - p) + 0.03 * p;
       groupRef.current.rotation.y = spun.current + t * idleSpin;
 
-      // While it is a bracelet it sits beside the headline on a wide screen
-      // rather than on top of it; the columns need the full width, so it
-      // slides back to centre as it opens.
-      const wide = size.width >= 1024;
-      const heroOffset = wide ? 1.35 : 0;
-      groupRef.current.position.x = heroOffset * (1 - p);
-      // On a narrow screen the copy sits above and the bracelet has its own
-      // reserved box below it, so it drops out of the text rather than
-      // sitting on top of it.
-      groupRef.current.position.y = (wide ? -0.1 : -1.35) * (1 - p);
-      // Sits comfortably inside its column as a bracelet, then opens to full
-      // size once it is a field of loose beads behind the wall. Phones get a
-      // smaller resting size so the sleeve is not clipped by the viewport.
-      const rest = wide ? 0.78 : 0.62;
+      // While it is a bracelet it sits in the box the hero reserved for it —
+      // beside the headline on a wide screen, below the copy on a phone —
+      // and slides back to centre as it opens into the full-width field.
+      // The anchor is read live, so a resize or a font swap moves it with the
+      // layout instead of leaving it stranded.
+      const anchor = anchorRef?.current ?? null;
+      const halfW = halfWAt(0);
+      const halfH = halfHAt(0);
+
+      const heroX = anchor ? (anchor.fx * 2 - 1) * halfW : 0;
+      const heroY = anchor ? cam.position.y + (1 - anchor.fy * 2) * halfH : 0;
+      groupRef.current.position.x = heroX * (1 - p);
+      groupRef.current.position.y = heroY * (1 - p);
+
+      // Sized against the column rather than against the canvas: the canvas is
+      // now the whole page, so a fixed fraction of it would print a bracelet
+      // the width of a dinner plate on a monitor.
+      const boxWorld = anchor ? anchor.fw * 2 * halfW : SLEEVE_WIDTH;
+      const rest = THREE.MathUtils.clamp((boxWorld * 0.82) / SLEEVE_WIDTH, 0.42, 1);
       groupRef.current.scale.setScalar(rest + p * (1 - rest));
     }
 
@@ -203,7 +238,7 @@ function Beads({
       for (let i = 0; i < beads.length; i++) {
         const bead = beads[i];
         const a = bead.phase;
-        phys!.pos[i * 3] = bead.column.x;
+        phys!.pos[i * 3] = bead.column.x * spread;
         phys!.pos[i * 3 + 1] = bead.column.y;
         phys!.pos[i * 3 + 2] = bead.column.z;
         phys!.vel[i * 3] = Math.cos(a) * (0.5 + bead.drift * 0.7);
@@ -219,9 +254,13 @@ function Beads({
     // would fling every bead out of frame in one step.
     const dt = Math.min(delta, 1 / 30);
 
-    const X_BOUND = 8.4;
-    const Y_FLOOR = -5.4;
-    const Y_CEIL = 5.4;
+    // The walls the loose beads bounce off are the edges of the frame, worked
+    // out from the viewport each frame. Fixed bounds meant the field stopped
+    // short of both margins on a wide screen and left a bare strip down the
+    // sides of the page.
+    const X_BOUND = fieldHalfW + 0.8;
+    const Y_FLOOR = -(fieldHalfH + 0.5);
+    const Y_CEIL = fieldHalfH + 0.5;
     const Z_NEAR = -3.2;
     const Z_FAR = -11;
     const GRAVITY = -2.4;
@@ -286,7 +325,8 @@ function Beads({
       );
       const eased = easeInOut(local);
 
-      scratch.lerpVectors(bead.ring, bead.column, eased);
+      colTarget.set(bead.column.x * spread, bead.column.y, bead.column.z);
+      scratch.lerpVectors(bead.ring, colTarget, eased);
 
       if (eased > 0) {
         const sp = bead.drift;
@@ -350,10 +390,15 @@ function Beads({
 
 export default function BeadField({
   progressRef,
+  anchorRef,
   quality = "high",
   columns = 4,
 }: {
   progressRef: React.RefObject<number>;
+  /** Centre and width of the hero's reserved box, as fractions of the
+   *  viewport. The canvas spans the whole page, so this is what keeps the
+   *  bracelet in its column instead of dead centre. */
+  anchorRef?: React.RefObject<{ fx: number; fy: number; fw: number } | null>;
   quality?: "high" | "low";
   /** How many columns the beads settle into — matched to the number of
    *  ranges the wall below actually renders, so the promise that the beads
@@ -400,6 +445,7 @@ export default function BeadField({
 
       <Beads
         progressRef={progressRef}
+        anchorRef={anchorRef}
         spinRef={spinRef}
         stations={stations}
         perStation={perStation}

@@ -34,7 +34,7 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
     <>
       <SiteHeader />
       <main className="flex-1 bg-neutral">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 2xl:max-w-7xl">
           <Link
             href={`/shop/${piece.category}`}
             className="text-[0.8rem] text-primary underline underline-offset-4 hover:text-primary-dark"

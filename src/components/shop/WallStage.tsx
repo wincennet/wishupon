@@ -23,8 +23,16 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export function WallStage({ products }: { products: Product[] }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasHostRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const heroBoxRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
   const reduceMotion = useReducedMotion();
+
+  /** Where the bracelet should sit while it is still a bracelet, as fractions
+   *  of the viewport. The canvas is full-bleed so the loose beads can cover
+   *  the whole page, which means the bracelet can no longer inherit its
+   *  position from a container — it has to be told where the column is. */
+  const anchorRef = useRef<{ fx: number; fy: number; fw: number } | null>(null);
 
   const [quality, setQuality] = useState<"high" | "low">("high");
   const [mounted, setMounted] = useState(false);
@@ -36,6 +44,36 @@ export function WallStage({ products }: { products: Product[] }) {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     if (coarse || window.innerWidth < 900) setQuality("low");
   }, []);
+
+  useEffect(() => {
+    function measure() {
+      const section = heroSectionRef.current;
+      const box = heroBoxRef.current;
+      if (!section || !box) return;
+
+      const s = section.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+
+      // Measured against the hero section rather than the viewport: both are
+      // in normal flow, so the offset between them survives any scroll
+      // position. The canvas is sticky and the hero scrolls away under it, so
+      // a plain viewport reading would only be correct at the very top.
+      anchorRef.current = {
+        fx: (b.left + b.width / 2) / window.innerWidth,
+        fy: (b.top - s.top + b.height / 2) / window.innerHeight,
+        fw: b.width / window.innerWidth,
+      };
+    }
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (heroSectionRef.current) observer.observe(heroSectionRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [mounted]);
 
   useGSAP(
     () => {
@@ -99,31 +137,32 @@ export function WallStage({ products }: { products: Product[] }) {
 
   return (
     <div ref={stageRef} className="board-ground relative">
-      {/* The bead field, behind everything, sticky for the length of the stage.
-          Constrained to the same container as the content: full-bleed put the
-          bracelet in viewport coordinates while the headline sat in container
-          coordinates, so on a wide monitor they drifted apart. */}
+      {/* The bead field, behind everything, sticky for the length of the stage
+          and edge to edge: the loose beads are the page's backdrop, so boxing
+          them into the content column left a bare margin down both sides. The
+          bracelet keeps its place beside the headline through the measured
+          anchor above rather than by sharing the container. */}
       <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="sticky top-0 h-[100svh] min-h-[620px] max-h-[880px] w-full overflow-hidden">
-          <div
-            ref={canvasHostRef}
-            className="mx-auto h-full w-full max-w-6xl px-4 sm:px-6 2xl:max-w-7xl"
-          >
-            {mounted && !reduceMotion && (
-              <Suspense fallback={null}>
-                <BeadField
-                  progressRef={progressRef}
-                  quality={quality}
-                  columns={Math.max(byCategory.length, 1)}
-                />
-              </Suspense>
-            )}
-          </div>
+        <div
+          ref={canvasHostRef}
+          className="sticky top-0 h-[100svh] w-full overflow-hidden"
+        >
+          {mounted && !reduceMotion && (
+            <Suspense fallback={null}>
+              <BeadField
+                progressRef={progressRef}
+                anchorRef={anchorRef}
+                quality={quality}
+                columns={Math.max(byCategory.length, 1)}
+              />
+            </Suspense>
+          )}
         </div>
       </div>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
+        ref={heroSectionRef}
         id="top"
         className="relative z-10 flex h-[100svh] min-h-[620px] max-h-[880px] items-center bg-neutral/0"
       >
@@ -150,7 +189,7 @@ export function WallStage({ products }: { products: Product[] }) {
               pinned in front of it, overlapping, carrying the piece's name,
               its price label and the primary action. */}
           {featured && (
-            <div className="relative aspect-square w-full">
+            <div ref={heroBoxRef} className="relative aspect-square w-full">
               {/* Sits in the corner the card leaves free, so the hint is near
                   the object instead of marooned at the top of a tall column. */}
               <p className="absolute bottom-3 left-0 text-[0.72rem] tracking-wide text-ink-soft/70">

@@ -5,7 +5,7 @@ import { BRAND, DELIVERY, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/constants
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-neutral/60 bg-neutral-soft">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6 2xl:max-w-7xl">
         <div>
           <p className="font-display text-lg text-primary">{BRAND.name}</p>
           <p className="mt-2 max-w-xs text-[0.82rem] leading-relaxed text-ink-soft">

@@ -65,7 +65,11 @@ export function SiteHeader() {
             width={524}
             height={258}
             priority
-            className="h-7 w-auto sm:h-9"
+            /* Nudged up because the butterfly's wing rises well above the
+               script: centring the image's box leaves the word itself sitting
+               low against Shop, About and the cart, which reads as the header
+               being out of line even though the boxes agree. */
+            className="h-7 w-auto -translate-y-[3px] sm:h-9 sm:-translate-y-[4px]"
           />
         </Link>
 
