@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/categories";
-import { adjustStock, archiveProduct, restoreProduct } from "@/app/admin/actions";
+import { adjustStock, archiveProduct, restoreProduct, setStock } from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -116,6 +116,28 @@ export default async function AdminProductsPage() {
                     </button>
                   </form>
                 </div>
+
+                {/* One press to sell out or restock, because the plus and
+                    minus buttons alone do not make it obvious that zero is
+                    what puts SOLD on the card. */}
+                <form action={setStock}>
+                  <input type="hidden" name="id" value={product.id} />
+                  <input
+                    type="hidden"
+                    name="stock_qty"
+                    value={product.stock_qty === 0 ? 1 : 0}
+                  />
+                  <button
+                    type="submit"
+                    className={`inline-flex min-h-11 items-center justify-center rounded-full px-4 text-[0.8rem] transition-colors ${
+                      product.stock_qty === 0
+                        ? "bg-primary text-background hover:bg-primary-dark"
+                        : "border border-neutral text-ink hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {product.stock_qty === 0 ? "Back in stock" : "Mark sold out"}
+                  </button>
+                </form>
 
                 <div className="flex items-center gap-2">
                   <Link

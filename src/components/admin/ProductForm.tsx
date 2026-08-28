@@ -2,6 +2,7 @@ import Link from "next/link";
 import { saveProduct } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
 import { CATEGORIES } from "@/lib/categories";
+import { PhotoUploader } from "./PhotoUploader";
 
 /** One form for both adding and editing. Labels are written the way the
  *  owner would say them out loud, not the way the database names them. */
@@ -77,20 +78,7 @@ export function ProductForm({ product }: { product?: Product }) {
         </select>
       </Row>
 
-      <Row
-        label="Photos"
-        htmlFor="image_urls"
-        hint="One web address per line. Upload photos in Supabase Storage, then paste their links here."
-      >
-        <textarea
-          id="image_urls"
-          name="image_urls"
-          rows={3}
-          defaultValue={product?.image_urls.join("\n") ?? ""}
-          placeholder="/products/beaded-accessories/beaded-01-white-gold-tassel.jpg"
-          className={`${inputClass} font-mono text-[0.8rem]`}
-        />
-      </Row>
+      <PhotoUploader initial={product?.image_urls ?? []} />
 
       <label className="flex items-center gap-2.5">
         <input

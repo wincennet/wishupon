@@ -73,6 +73,17 @@ export async function adjustStock(formData: FormData) {
   refreshShop();
 }
 
+/** Sell out or restock in one press. Kept separate from adjustStock so the
+ *  owner never has to press minus five times to take something off sale. */
+export async function setStock(formData: FormData) {
+  const supabase = await requireClient();
+  await supabase
+    .from("products")
+    .update({ stock_qty: Math.max(0, Number(formData.get("stock_qty"))) })
+    .eq("id", String(formData.get("id")));
+  refreshShop();
+}
+
 /** Archive rather than delete: an order's line items reference this piece,
  *  and its history should not lose the product it points at. */
 export async function archiveProduct(formData: FormData) {
