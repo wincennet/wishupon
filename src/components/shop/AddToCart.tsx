@@ -33,7 +33,7 @@ export function AddToCart({ product }: { product: Product }) {
           )}
           target="_blank"
           rel="noreferrer"
-          className="mt-4 inline-block rounded-full bg-primary px-5 py-2.5 text-[0.85rem] font-medium text-background transition-colors hover:bg-primary-dark"
+          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-[0.85rem] font-medium text-background transition-colors hover:bg-primary-dark"
         >
           Request this piece
         </a>
@@ -57,7 +57,7 @@ export function AddToCart({ product }: { product: Product }) {
               fly(buttonRef.current, familyOf(product.name).beads);
             }
           }}
-          className="rounded-full bg-primary px-7 py-3 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-45"
+          className="inline-flex min-h-12 items-center rounded-full bg-primary px-7 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-45"
         >
           {maxed ? "All of them are in your cart" : "Add to cart"}
         </button>
@@ -65,7 +65,7 @@ export function AddToCart({ product }: { product: Product }) {
         {added && (
           <Link
             href="/cart"
-            className="rounded-full border border-primary/35 px-6 py-3 text-[0.9rem] text-primary transition-colors hover:bg-primary hover:text-background"
+            className="inline-flex min-h-12 items-center rounded-full border border-primary/35 px-6 text-[0.9rem] text-primary transition-colors hover:bg-primary hover:text-background"
           >
             Go to cart
           </Link>

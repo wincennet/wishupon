@@ -17,19 +17,19 @@ export function SiteFooter() {
           <h2 className="text-[0.7rem] uppercase tracking-[0.16em] text-ink-soft">
             Shop
           </h2>
-          <ul className="mt-3 space-y-1.5 text-[0.85rem]">
+          <ul className="mt-1 text-[0.85rem]">
             <li>
-              <Link href="/shop/beaded-accessories" className="text-ink hover:text-primary">
+              <Link href="/shop/beaded-accessories" className="flex min-h-11 items-center text-ink hover:text-primary">
                 Beaded accessories
               </Link>
             </li>
             <li>
-              <Link href="/shop/steel-bracelets" className="text-ink hover:text-primary">
+              <Link href="/shop/steel-bracelets" className="flex min-h-11 items-center text-ink hover:text-primary">
                 Steel bracelets
               </Link>
             </li>
             <li>
-              <Link href="/about" className="text-ink hover:text-primary">
+              <Link href="/about" className="flex min-h-11 items-center text-ink hover:text-primary">
                 About &amp; custom orders
               </Link>
             </li>
@@ -44,7 +44,7 @@ export function SiteFooter() {
             href={whatsappLink("Assalam o alaikum! I have a question about WishUpon.")}
             target="_blank"
             rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary/35 px-3.5 py-1.5 text-[0.82rem] text-primary transition-colors hover:bg-primary hover:text-background"
+            className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-primary/35 px-4 text-[0.82rem] text-primary transition-colors hover:bg-primary hover:text-background"
           >
             WhatsApp {WHATSAPP_DISPLAY}
           </a>

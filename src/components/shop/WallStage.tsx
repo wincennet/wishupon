@@ -93,7 +93,7 @@ export function WallStage({ products }: { products: Product[] }) {
         id="top"
         className="relative z-10 flex min-h-screen items-center bg-neutral/0"
       >
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] 2xl:max-w-7xl">
           <div>
             <h1 className="font-serif text-[2.6rem] leading-[1.02] tracking-[-0.01em] text-ink sm:text-6xl lg:text-[4.4rem]">
               No two pieces
@@ -158,7 +158,7 @@ export function WallStage({ products }: { products: Product[] }) {
 
                     <Link
                       href={`/piece/${featured.id}`}
-                      className="rounded-full bg-primary px-5 py-2.5 text-[0.82rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                      className="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-[0.82rem] font-medium text-background transition-colors hover:bg-primary-dark"
                     >
                       See this piece
                     </Link>
@@ -178,14 +178,14 @@ export function WallStage({ products }: { products: Product[] }) {
 
       {/* ── The wall ─────────────────────────────────────────────────────── */}
       <section className="relative z-10">
-        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20 2xl:max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
               Ready to post
             </h2>
             <Link
               href="/shop/beaded-accessories"
-              className="text-[0.85rem] text-primary underline underline-offset-4 hover:text-primary-dark"
+              className="flex min-h-11 items-center text-[0.85rem] text-primary underline underline-offset-4 hover:text-primary-dark"
             >
               See everything
             </Link>
@@ -196,22 +196,33 @@ export function WallStage({ products }: { products: Product[] }) {
                the beads fly into overhead, and it keeps the wall dense instead
                of leaving a four-wide grid mostly empty when a colour only has
                one or two pieces in stock. */
-            <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-12 sm:gap-x-7 lg:grid-cols-4">
-              {byFamily.map(({ family, pieces }) => (
-                <div key={family.id}>
+            /* Narrow screens stack the families and run each one's pieces
+               two-up, because four side-by-side columns of uneven length
+               leave long dead gaps on a phone. From lg the families become
+               the columns the beads overhead fly into. */
+            <div className="mt-12 grid grid-cols-1 gap-y-14 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-0">
+              {byFamily.map(({ family, pieces }, columnIndex) => (
+                <div
+                  key={family.id}
+                  /* Columns start at slightly different heights: a real board
+                     is pinned by hand, not aligned to a baseline. */
+                  className={
+                    ["lg:mt-0", "lg:mt-7", "lg:mt-3", "lg:mt-10"][columnIndex % 4]
+                  }
+                >
                   <div className="flex items-center gap-2">
                     <span
                       aria-hidden
                       className="h-2 w-2 shrink-0 rounded-full"
                       style={{ background: family.focus }}
                     />
-                    <h3 className="font-display text-[0.62rem] uppercase tracking-[0.18em] text-ink-soft sm:text-[0.68rem]">
+                    <h3 className="font-display text-[0.64rem] uppercase tracking-[0.18em] text-ink-soft sm:text-[0.68rem]">
                       {family.label}
                     </h3>
                   </div>
                   <span className="mt-2 block h-px w-full bg-ink/10" />
 
-                  <div className="mt-8 space-y-12">
+                  <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-1 lg:gap-y-12">
                     {pieces.map((piece, i) => (
                       <PieceCard key={piece.id} product={piece} index={i} />
                     ))}

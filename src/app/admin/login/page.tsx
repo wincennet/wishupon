@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-full bg-primary px-6 py-3 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
+            className="inline-flex min-h-11 items-center justify-center w-full rounded-full bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
           >
             {busy ? "Signing in…" : "Sign in"}
           </button>

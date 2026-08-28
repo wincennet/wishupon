@@ -39,23 +39,29 @@ export function SiteHeader() {
       }`}
     >
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center" aria-label="WishUpon — home">
+        {/* Every hit area clears 44px so a thumb can land on it, even where
+            the ink inside is smaller than that. */}
+        <Link
+          href="/"
+          className="flex min-h-11 items-center"
+          aria-label="WishUpon — home"
+        >
           <Image
             src="/logo/wordmark.png"
             alt="WishUpon"
             width={524}
             height={258}
             priority
-            className="h-8 w-auto sm:h-9"
+            className="h-7 w-auto sm:h-9"
           />
         </Link>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-0.5 sm:gap-2">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-[2px] px-2.5 py-1.5 text-[0.82rem] text-ink transition-colors hover:text-primary"
+              className="flex min-h-11 items-center rounded-[2px] px-2.5 text-[0.82rem] text-ink transition-colors hover:text-primary"
             >
               {link.label}
             </Link>
@@ -64,7 +70,7 @@ export function SiteHeader() {
           <Link
             ref={cartRef}
             href="/cart"
-            className="ml-1 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[0.82rem] font-medium text-background transition-colors hover:bg-primary-dark"
+            className="ml-1 flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-[0.82rem] font-medium text-background transition-colors hover:bg-primary-dark"
             style={{ willChange: "transform" }}
           >
             Cart

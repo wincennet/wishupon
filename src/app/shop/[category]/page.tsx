@@ -77,7 +77,7 @@ export default async function CategoryPage({
                 )}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
               >
                 Ask on WhatsApp
               </a>

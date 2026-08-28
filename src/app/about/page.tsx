@@ -64,7 +64,7 @@ export default function AboutPage() {
               )}
               target="_blank"
               rel="noreferrer"
-              className="mt-7 inline-block rounded-full bg-primary px-6 py-3 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
+              className="inline-flex min-h-11 items-center justify-center mt-7 rounded-full bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
             >
               WhatsApp {WHATSAPP_DISPLAY}
             </a>

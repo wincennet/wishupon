@@ -34,7 +34,7 @@ export default async function AdminProductsPage() {
 
         <Link
           href="/admin/pieces/new"
-          className="rounded-full bg-primary px-5 py-2.5 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
+          className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-5 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
         >
           + Add a piece
         </Link>
@@ -119,7 +119,7 @@ export default async function AdminProductsPage() {
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/admin/pieces/${product.id}`}
-                    className="rounded-full border border-neutral px-4 py-2 text-[0.82rem] text-ink transition-colors hover:border-primary hover:text-primary"
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-neutral px-4 text-[0.82rem] text-ink transition-colors hover:border-primary hover:text-primary"
                   >
                     Edit
                   </Link>
@@ -128,7 +128,7 @@ export default async function AdminProductsPage() {
                     <input type="hidden" name="id" value={product.id} />
                     <button
                       type="submit"
-                      className="rounded-full px-3 py-2 text-[0.82rem] text-ink-soft underline underline-offset-2 hover:text-primary"
+                      className="inline-flex min-h-11 items-center justify-center rounded-full px-3 text-[0.82rem] text-ink-soft underline underline-offset-2 hover:text-primary"
                     >
                       {product.is_active ? "Hide" : "Show again"}
                     </button>

@@ -43,3 +43,6 @@ next-env.d.ts
 # Impeccable session scratch
 .impeccable/questions/
 .impeccable/review/
+
+.vercel
+.env*

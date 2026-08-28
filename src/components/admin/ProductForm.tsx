@@ -120,7 +120,7 @@ export function ProductForm({ product }: { product?: Product }) {
       <div className="flex items-center gap-3 border-t border-neutral pt-5">
         <button
           type="submit"
-          className="rounded-full bg-primary px-7 py-3 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
+          className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-7 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
         >
           {product ? "Save changes" : "Add this piece"}
         </button>

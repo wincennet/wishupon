@@ -60,13 +60,13 @@ export function Hero() {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link
               href="/shop/beaded-accessories"
-              className="rounded-full bg-primary px-6 py-3 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
             >
               See the wall
             </Link>
             <Link
               href="/about"
-              className="rounded-full border border-primary/35 px-6 py-3 text-[0.9rem] text-primary transition-colors hover:bg-primary hover:text-background"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary/35 px-6 text-[0.9rem] text-primary transition-colors hover:bg-primary hover:text-background"
             >
               Order a custom piece
             </Link>

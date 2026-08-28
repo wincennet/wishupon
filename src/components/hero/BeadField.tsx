@@ -145,8 +145,10 @@ function Beads({
       // sitting on top of it.
       groupRef.current.position.y = (wide ? -0.1 : -1.35) * (1 - p);
       // Sits comfortably inside its column as a bracelet, then opens to full
-      // size once it is a field of loose beads behind the wall.
-      groupRef.current.scale.setScalar(0.78 + p * 0.22);
+      // size once it is a field of loose beads behind the wall. Phones get a
+      // smaller resting size so the sleeve is not clipped by the viewport.
+      const rest = wide ? 0.78 : 0.62;
+      groupRef.current.scale.setScalar(rest + p * (1 - rest));
     }
 
     // Solid while it is a piece of jewellery; once the beads are loose behind

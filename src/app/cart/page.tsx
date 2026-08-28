@@ -30,7 +30,7 @@ export default function CartPage() {
               </p>
               <Link
                 href="/shop/beaded-accessories"
-                className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
               >
                 See the wall
               </Link>
@@ -119,7 +119,7 @@ export default function CartPage() {
 
                 <Link
                   href="/checkout"
-                  className="mt-5 block rounded-full bg-primary px-6 py-3.5 text-center text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                  className="mt-5 flex min-h-12 w-full items-center justify-center rounded-full bg-primary px-6 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark"
                 >
                   Checkout
                 </Link>

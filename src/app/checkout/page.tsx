@@ -65,7 +65,7 @@ export default function CheckoutPage() {
             <p className="font-display text-xl text-ink">Your cart is empty.</p>
             <Link
               href="/shop/beaded-accessories"
-              className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-[0.88rem] font-medium text-background"
+              className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background"
             >
               See the wall
             </Link>
@@ -185,7 +185,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="w-full rounded-full bg-primary px-6 py-3.5 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
+              className="inline-flex min-h-11 items-center justify-center w-full rounded-full bg-primary px-6 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
             >
               {status === "sending" ? "Placing your order…" : "Place order"}
             </button>

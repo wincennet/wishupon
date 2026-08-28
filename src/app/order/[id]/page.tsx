@@ -54,13 +54,13 @@ export default async function OrderPlacedPage({
                 )}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full bg-primary px-6 py-3 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
               >
                 Message us
               </a>
               <Link
                 href="/shop/beaded-accessories"
-                className="rounded-full border border-primary/35 px-6 py-3 text-[0.88rem] text-primary transition-colors hover:bg-primary hover:text-background"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary/35 px-6 text-[0.88rem] text-primary transition-colors hover:bg-primary hover:text-background"
               >
                 Keep looking
               </Link>
