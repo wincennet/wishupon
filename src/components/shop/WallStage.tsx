@@ -99,10 +99,16 @@ export function WallStage({ products }: { products: Product[] }) {
 
   return (
     <div ref={stageRef} className="board-ground relative">
-      {/* The bead field, behind everything, sticky for the length of the stage */}
+      {/* The bead field, behind everything, sticky for the length of the stage.
+          Constrained to the same container as the content: full-bleed put the
+          bracelet in viewport coordinates while the headline sat in container
+          coordinates, so on a wide monitor they drifted apart. */}
       <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
-          <div ref={canvasHostRef} className="h-full w-full">
+        <div className="sticky top-0 h-[100svh] min-h-[620px] max-h-[880px] w-full overflow-hidden">
+          <div
+            ref={canvasHostRef}
+            className="mx-auto h-full w-full max-w-6xl px-4 sm:px-6 2xl:max-w-7xl"
+          >
             {mounted && !reduceMotion && (
               <Suspense fallback={null}>
                 <BeadField
@@ -119,7 +125,7 @@ export function WallStage({ products }: { products: Product[] }) {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         id="top"
-        className="relative z-10 flex min-h-screen items-center bg-neutral/0"
+        className="relative z-10 flex h-[100svh] min-h-[620px] max-h-[880px] items-center bg-neutral/0"
       >
         <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] 2xl:max-w-7xl">
           <div>
@@ -145,7 +151,9 @@ export function WallStage({ products }: { products: Product[] }) {
               its price label and the primary action. */}
           {featured && (
             <div className="relative aspect-square w-full">
-              <p className="absolute left-1/2 top-3 -translate-x-1/2 text-[0.7rem] tracking-wide text-ink-soft/70">
+              {/* Sits in the corner the card leaves free, so the hint is near
+                  the object instead of marooned at the top of a tall column. */}
+              <p className="absolute bottom-3 left-0 text-[0.72rem] tracking-wide text-ink-soft/70">
                 Drag to turn it
               </p>
 
