@@ -46,3 +46,10 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Local audit scratch — screenshots and one-off measuring scripts
+*-tmp.mjs
+shot-*.png
+hdr-*.png
+v2-*.png
+prod-*.png
