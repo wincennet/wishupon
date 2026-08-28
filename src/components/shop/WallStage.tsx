@@ -118,6 +118,24 @@ export function WallStage({ products }: { products: Product[] }) {
   // strip of cards. That range takes the whole board instead.
   const soleRange = byCategory.length === 1;
 
+  // Every range shows the same number of pieces, so the columns finish level.
+  //
+  // Without this the board is as tall as its deepest range: with fifteen
+  // bangles beside four pairs of earrings, the earrings ran out after one
+  // screen and the bangles carried on alone for five more, with the whole
+  // right-hand side of the page empty the entire way down. The wall is a
+  // shop window, not the full catalogue — anything past the cut is one click
+  // away on its own range page, which is a better place to browse fifteen
+  // bracelets than a single-file column anyway.
+  // One row of slack rather than an exact match: holding every range to the
+  // thinnest one would hide most of the main range to save a few hundred
+  // pixels. A single uneven row reads as a hand-pinned board; six screens of
+  // it reads as a broken page.
+  const shortestRange = Math.min(...byCategory.map((c) => c.pieces.length));
+  const perRange = soleRange
+    ? Infinity
+    : Math.min(8, Math.max(3, shortestRange + 1));
+
   // The board is divided by how many ranges actually have stock, not by a
   // fixed four, so two populated ranges do not leave half the wall bare.
   // Written out in full because Tailwind cannot see a constructed class name.
@@ -308,10 +326,24 @@ export function WallStage({ products }: { products: Product[] }) {
                       `mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 ${pieceClass}`
                     }
                   >
-                    {pieces.map((piece, i) => (
+                    {pieces.slice(0, perRange).map((piece, i) => (
                       <PieceCard key={piece.id} product={piece} index={i} />
                     ))}
                   </div>
+
+                  {/* Where a range was cut to keep the board level, the rest
+                      of it is one click away rather than silently missing. */}
+                  {pieces.length > perRange && (
+                    <Link
+                      href={`/shop/${category.id}`}
+                      className="mt-7 flex min-h-11 items-center text-[0.82rem] text-primary underline underline-offset-4 hover:text-primary-dark"
+                    >
+                      All {pieces.length} {category.label.toLowerCase()}
+                      <span aria-hidden className="ml-1.5">
+                        &rarr;
+                      </span>
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>

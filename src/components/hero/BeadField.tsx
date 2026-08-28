@@ -176,14 +176,22 @@ function Beads({
       THREE.MathUtils.clamp((halfWAt(depth) * 2) / COLUMN_SPAN, 0.72, 4.4);
 
     if (groupRef.current) {
-      // Drag momentum bleeds off instead of stopping dead; idle drift takes
-      // over as it settles, and both fade out as the sleeve comes apart.
+      // Drag momentum bleeds off instead of stopping dead, and the whole
+      // turntable winds down as the sleeve comes apart.
+      //
+      // Turning belongs to the bracelet, not to the loose beads: a wide flat
+      // field rotated about Y projects narrower by cos(angle), so leaving a
+      // little spin running forever made the settled field breathe in and out
+      // and periodically strip both page margins bare. The field keeps moving
+      // through the physics now, which is what the spin floor was standing in
+      // for before there was any. The resting tilt goes with it, so the open
+      // field faces the camera square on and uses the full frame.
       spun.current += (spinRef.current ?? 0);
       spinRef.current = (spinRef.current ?? 0) * 0.9;
-      // Scaling the idle spin by (1 - p) alone left the field frozen once the
-      // scroll finished. A floor keeps it turning gently forever.
-      const idleSpin = 0.15 * (1 - p) + 0.03 * p;
-      groupRef.current.rotation.y = spun.current + t * idleSpin;
+      const settled = 1 - p;
+      groupRef.current.rotation.x = 0.45 * settled;
+      groupRef.current.rotation.z = 0.15 * settled;
+      groupRef.current.rotation.y = (spun.current + t * 0.15) * settled;
 
       // While it is a bracelet it sits in the box the hero reserved for it —
       // beside the headline on a wide screen, below the copy on a phone —
@@ -352,6 +360,8 @@ function Beads({
     mesh.instanceMatrix.needsUpdate = true;
   });
 
+  // The resting tilt below is only the value for the very first frame — the
+  // frame loop drives it from there so it can ease out as the sleeve opens.
   return (
     <group ref={groupRef} rotation={[0.45, 0, 0.15]}>
       {/* torusGeometry is built in the XY plane but the sleeve rings XZ —
