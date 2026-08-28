@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { saveProduct } from "@/app/admin/actions";
-import { CATEGORY_LABELS, type Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
+import { CATEGORIES } from "@/lib/categories";
 
 /** One form for both adding and editing. Labels are written the way the
  *  owner would say them out loud, not the way the database names them. */
@@ -61,36 +62,20 @@ export function ProductForm({ product }: { product?: Product }) {
         </Row>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Row label="Category" htmlFor="category">
-          <select
-            id="category"
-            name="category"
-            defaultValue={product?.category ?? "beaded-accessories"}
-            className={inputClass}
-          >
-            {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </Row>
-
-        <Row label="What kind of piece?" htmlFor="sub_type">
-          <select
-            id="sub_type"
-            name="sub_type"
-            defaultValue={product?.sub_type ?? "bracelet"}
-            className={inputClass}
-          >
-            <option value="bracelet">Bracelet</option>
-            <option value="earring">Earrings</option>
-            <option value="necklace">Necklace</option>
-            <option value="">Something else</option>
-          </select>
-        </Row>
-      </div>
+      <Row label="Category" htmlFor="category">
+        <select
+          id="category"
+          name="category"
+          defaultValue={product?.category ?? "bangles"}
+          className={inputClass}
+        >
+          {CATEGORIES.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      </Row>
 
       <Row
         label="Photos"

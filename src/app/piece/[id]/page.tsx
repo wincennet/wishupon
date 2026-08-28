@@ -6,7 +6,8 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AddToCart } from "@/components/shop/AddToCart";
 import { formatPrice } from "@/lib/format";
-import { CATEGORY_LABELS, type Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
+import { CATEGORY_LABELS } from "@/lib/categories";
 import { DELIVERY, whatsappLink } from "@/lib/constants";
 
 export const revalidate = 60;

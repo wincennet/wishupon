@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CATEGORIES } from "@/lib/categories";
 import { BRAND, DELIVERY, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/constants";
 
 export function SiteFooter() {
@@ -18,16 +19,16 @@ export function SiteFooter() {
             Shop
           </h2>
           <ul className="mt-1 text-[0.85rem]">
-            <li>
-              <Link href="/shop/beaded-accessories" className="flex min-h-11 items-center text-ink hover:text-primary">
-                Beaded accessories
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop/steel-bracelets" className="flex min-h-11 items-center text-ink hover:text-primary">
-                Steel bracelets
-              </Link>
-            </li>
+            {CATEGORIES.map((c) => (
+              <li key={c.id}>
+                <Link
+                  href={`/shop/${c.id}`}
+                  className="flex min-h-11 items-center text-ink hover:text-primary"
+                >
+                  {c.label}
+                </Link>
+              </li>
+            ))}
             <li>
               <Link href="/about" className="flex min-h-11 items-center text-ink hover:text-primary">
                 About &amp; custom orders

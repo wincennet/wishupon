@@ -6,7 +6,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { useFlyToCart } from "@/components/cart/FlyToCart";
 import type { Product } from "@/lib/types";
 import { whatsappLink } from "@/lib/constants";
-import { familyOf } from "@/lib/palette";
+import { categoryOf } from "@/lib/categories";
 
 export function AddToCart({ product }: { product: Product }) {
   const { add, items } = useCart();
@@ -54,7 +54,7 @@ export function AddToCart({ product }: { product: Product }) {
             // The beads that fly are this piece's own colours, so the burst
             // reads as the object moving rather than generic confetti.
             if (buttonRef.current) {
-              fly(buttonRef.current, familyOf(product.name).beads);
+              fly(buttonRef.current, categoryOf(product.category).beads);
             }
           }}
           className="inline-flex min-h-12 items-center rounded-full bg-primary px-7 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-45"

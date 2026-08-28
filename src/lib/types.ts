@@ -1,6 +1,10 @@
-export type Category = "beaded-accessories" | "steel-bracelets";
-
-export type SubType = "bracelet" | "earring" | "necklace" | null;
+export type Category =
+  | "bangles"
+  | "hoop-earrings"
+  | "ringlets"
+  | "necklaces"
+  | "special-packs"
+  | "custom";
 
 export type OrderStatus = "pending" | "confirmed" | "fulfilled" | "cancelled";
 
@@ -12,7 +16,6 @@ export type Product = {
   description: string | null;
   price: number;
   category: Category;
-  sub_type: SubType;
   stock_qty: number;
   image_urls: string[];
   is_active: boolean;
@@ -40,15 +43,4 @@ export type Order = {
   payment_reference: string | null;
   status: OrderStatus;
   created_at: string;
-};
-
-export const CATEGORY_LABELS: Record<Category, string> = {
-  "beaded-accessories": "Beaded Accessories",
-  "steel-bracelets": "Steel Bracelets",
-};
-
-export const SUB_TYPE_LABELS: Record<string, string> = {
-  bracelet: "Bracelets",
-  earring: "Earrings",
-  necklace: "Necklaces",
 };

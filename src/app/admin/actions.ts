@@ -35,7 +35,6 @@ export async function saveProduct(formData: FormData) {
     description: String(formData.get("description") ?? "").trim() || null,
     price: Number(formData.get("price")),
     category: String(formData.get("category")),
-    sub_type: String(formData.get("sub_type") ?? "") || null,
     stock_qty: Number(formData.get("stock_qty")),
     image_urls: images,
     is_active: formData.get("is_active") === "on",

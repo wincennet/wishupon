@@ -64,7 +64,7 @@ export default function CheckoutPage() {
           <div className="mx-auto w-full max-w-md px-4 py-16 text-center sm:px-6">
             <p className="font-display text-xl text-ink">Your cart is empty.</p>
             <Link
-              href="/shop/beaded-accessories"
+              href="/shop/bangles"
               className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background"
             >
               See the wall

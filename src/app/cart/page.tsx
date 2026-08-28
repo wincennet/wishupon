@@ -29,7 +29,7 @@ export default function CartPage() {
                 Every piece is one of a kind, so it is worth a look.
               </p>
               <Link
-                href="/shop/beaded-accessories"
+                href="/shop/bangles"
                 className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
               >
                 See the wall

@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/format";
-import { CATEGORY_LABELS, type Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
+import { CATEGORY_LABELS } from "@/lib/categories";
 import { adjustStock, archiveProduct, restoreProduct } from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";

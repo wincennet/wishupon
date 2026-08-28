@@ -59,7 +59,7 @@ export function Hero() {
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link
-              href="/shop/beaded-accessories"
+              href="/shop/bangles"
               className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
             >
               See the wall

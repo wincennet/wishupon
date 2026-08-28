@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
-import { colourOf, familyOf, pieceMark } from "@/lib/palette";
+import { categoryOf, colourOf, pieceMark } from "@/lib/categories";
 import { PushPin } from "./PushPin";
 
 /** One piece, one card, pinned to the board.
@@ -36,7 +36,7 @@ export function PieceCard({
   const [hovering, setHovering] = useState(false);
 
   const soldOut = product.stock_qty <= 0;
-  const family = familyOf(product.name);
+  const category = categoryOf(product.category);
   const colour = colourOf(product.name);
   const mark = pieceMark(product.id);
 
@@ -109,7 +109,7 @@ export function PieceCard({
           style={{
             // A real edge: warm bevel on the lit side, cool on the shadowed.
             boxShadow: featured
-              ? `inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(42,27,61,0.10), 0 0 0 1px ${family.focus}55`
+              ? `inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(42,27,61,0.10), 0 0 0 1px ${category.accent}55`
               : "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(42,27,61,0.10), 0 0 0 1px rgba(42,27,61,0.09)",
           }}
         >
@@ -182,7 +182,7 @@ export function PieceCard({
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] origin-left transition-transform duration-300"
             style={{
-              background: family.focus,
+              background: category.accent,
               transform: hovering || featured ? "scaleX(1)" : "scaleX(0)",
             }}
           />

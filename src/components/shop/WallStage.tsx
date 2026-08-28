@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useReducedMotion } from "framer-motion";
 import type { Product } from "@/lib/types";
-import { FAMILIES, familyOf } from "@/lib/palette";
+import { CATEGORIES, categoryOf } from "@/lib/categories";
 import { PieceCard } from "./PieceCard";
 import { PushPin } from "./PushPin";
 import { formatPrice } from "@/lib/format";
@@ -67,11 +67,18 @@ export function WallStage({ products }: { products: Product[] }) {
   const featured = products.find((p) => p.stock_qty > 0) ?? products[0];
   const wall = products.filter((p) => p.id !== featured?.id);
 
-  // The wall is sorted into the same four families the beads fly into.
-  const byFamily = FAMILIES.map((family) => ({
-    family,
-    pieces: wall.filter((p) => familyOf(p.name).id === family.id),
+  // The wall is grouped by the shop's own ranges, in the order the client
+  // gave them, and the beads overhead settle into these same columns. Ranges
+  // with nothing in stock are not shown here — the nav and footer still list
+  // all six so a shopper can ask about them.
+  const byCategory = CATEGORIES.map((category) => ({
+    category,
+    pieces: wall.filter((p) => p.category === category.id),
   })).filter((column) => column.pieces.length > 0);
+
+  // With stock in only one range, four columns would leave a single skinny
+  // strip of cards. That range takes the whole board instead.
+  const soleRange = byCategory.length === 1;
 
   return (
     <div ref={stageRef} className="board-ground relative">
@@ -81,7 +88,11 @@ export function WallStage({ products }: { products: Product[] }) {
           <div ref={canvasHostRef} className="h-full w-full">
             {mounted && !reduceMotion && (
               <Suspense fallback={null}>
-                <BeadField progressRef={progressRef} quality={quality} />
+                <BeadField
+                  progressRef={progressRef}
+                  quality={quality}
+                  columns={Math.max(byCategory.length, 1)}
+                />
               </Suspense>
             )}
           </div>
@@ -167,7 +178,7 @@ export function WallStage({ products }: { products: Product[] }) {
                   <span
                     aria-hidden
                     className="absolute inset-x-0 bottom-0 h-[2px]"
-                    style={{ background: familyOf(featured.name).focus }}
+                    style={{ background: categoryOf(featured.category).accent }}
                   />
                 </div>
               </div>
@@ -184,14 +195,14 @@ export function WallStage({ products }: { products: Product[] }) {
               Ready to post
             </h2>
             <Link
-              href="/shop/beaded-accessories"
+              href="/shop/bangles"
               className="flex min-h-11 items-center text-[0.85rem] text-primary underline underline-offset-4 hover:text-primary-dark"
             >
               See everything
             </Link>
           </div>
 
-          {byFamily.length > 0 ? (
+          {byCategory.length > 0 ? (
             /* Families are columns, not stacked rows: this is the arrangement
                the beads fly into overhead, and it keeps the wall dense instead
                of leaving a four-wide grid mostly empty when a colour only has
@@ -200,29 +211,43 @@ export function WallStage({ products }: { products: Product[] }) {
                two-up, because four side-by-side columns of uneven length
                leave long dead gaps on a phone. From lg the families become
                the columns the beads overhead fly into. */
-            <div className="mt-12 grid grid-cols-1 gap-y-14 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-0">
-              {byFamily.map(({ family, pieces }, columnIndex) => (
+            <div
+              className={
+                soleRange
+                  ? "mt-12"
+                  : "mt-12 grid grid-cols-1 gap-y-14 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-0"
+              }
+            >
+              {byCategory.map(({ category, pieces }, columnIndex) => (
                 <div
-                  key={family.id}
+                  key={category.id}
                   /* Columns start at slightly different heights: a real board
                      is pinned by hand, not aligned to a baseline. */
                   className={
-                    ["lg:mt-0", "lg:mt-7", "lg:mt-3", "lg:mt-10"][columnIndex % 4]
+                    soleRange
+                      ? undefined
+                      : ["lg:mt-0", "lg:mt-7", "lg:mt-3", "lg:mt-10"][columnIndex % 4]
                   }
                 >
                   <div className="flex items-center gap-2">
                     <span
                       aria-hidden
                       className="h-2 w-2 shrink-0 rounded-full"
-                      style={{ background: family.focus }}
+                      style={{ background: category.accent }}
                     />
                     <h3 className="font-display text-[0.64rem] uppercase tracking-[0.18em] text-ink-soft sm:text-[0.68rem]">
-                      {family.label}
+                      {category.label}
                     </h3>
                   </div>
                   <span className="mt-2 block h-px w-full bg-ink/10" />
 
-                  <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-1 lg:gap-y-12">
+                  <div
+                    className={
+                      soleRange
+                        ? "mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-4"
+                        : "mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-1 lg:gap-y-12"
+                    }
+                  >
                     {pieces.map((piece, i) => (
                       <PieceCard key={piece.id} product={piece} index={i} />
                     ))}

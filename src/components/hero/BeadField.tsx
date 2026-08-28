@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { FAMILIES } from "@/lib/palette";
+import { CATEGORIES } from "@/lib/categories";
 
 /** The bracelet and the beads behind the wall are the same object.
  *
@@ -30,10 +30,9 @@ type Bead = {
 const RING_RADIUS = 1.5;
 const TUBE_RADIUS = 0.17;
 
-function useBeads(stations: number, perStation: number): Bead[] {
+function useBeads(stations: number, perStation: number, columnCount: number): Bead[] {
   return useMemo(() => {
     const beads: Bead[] = [];
-    const columnCount = FAMILIES.length;
     const columnSpan = 8.4;
 
     for (let i = 0; i < stations; i++) {
@@ -50,10 +49,10 @@ function useBeads(stations: number, perStation: number): Bead[] {
           r * Math.sin(around)
         );
 
-        // Family membership is spread evenly around the ring, so the sleeve is
-        // mixed and the columns are not carved out of one arc of it.
-        const familyIndex = (i * perStation + j) % columnCount;
-        const family = FAMILIES[familyIndex];
+        // Column membership is spread evenly around the ring, so the sleeve is
+        // mixed and each column is not carved out of one arc of it.
+        const columnIndex = (i * perStation + j) % columnCount;
+        const range = CATEGORIES[columnIndex % CATEGORIES.length];
 
         const spreadX = (((i * 13 + j * 29) % 100) / 100 - 0.5) * 1.6;
         const spreadY = (((i * 7 + j * 17) % 100) / 100 - 0.5) * 9.5;
@@ -62,7 +61,7 @@ function useBeads(stations: number, perStation: number): Bead[] {
         const spreadZ = (((i * 23 + j * 3) % 100) / 100) * -6 - 4;
 
         const column = new THREE.Vector3(
-          (familyIndex - (columnCount - 1) / 2) * (columnSpan / columnCount) + spreadX,
+          (columnIndex - (columnCount - 1) / 2) * (columnSpan / columnCount) + spreadX,
           spreadY,
           spreadZ
         );
@@ -70,7 +69,7 @@ function useBeads(stations: number, perStation: number): Bead[] {
         beads.push({
           ring,
           column,
-          colour: new THREE.Color(family.beads[(i + j) % family.beads.length]),
+          colour: new THREE.Color(range.beads[(i + j) % range.beads.length]),
           scale: 0.1 + ((i * 7 + j * 3) % 5) * 0.011,
           delay: (i / stations) * 0.35,
           drift: (((i * 31 + j * 19) % 100) / 100) * 0.6 + 0.2,
@@ -79,7 +78,7 @@ function useBeads(stations: number, perStation: number): Bead[] {
     }
 
     return beads;
-  }, [stations, perStation]);
+  }, [stations, perStation, columnCount]);
 }
 
 function easeInOut(t: number) {
@@ -91,13 +90,15 @@ function Beads({
   spinRef,
   stations,
   perStation,
+  columns,
 }: {
   progressRef: React.RefObject<number>;
   spinRef: React.RefObject<number>;
   stations: number;
   perStation: number;
+  columns: number;
 }) {
-  const beads = useBeads(stations, perStation);
+  const beads = useBeads(stations, perStation, columns);
   const { size } = useThree();
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const wireRef = useRef<THREE.Mesh>(null);
@@ -231,9 +232,14 @@ function Beads({
 export default function BeadField({
   progressRef,
   quality = "high",
+  columns = 4,
 }: {
   progressRef: React.RefObject<number>;
   quality?: "high" | "low";
+  /** How many columns the beads settle into — matched to the number of
+   *  ranges the wall below actually renders, so the promise that the beads
+   *  sort into those columns stays true as stock changes. */
+  columns?: number;
 }) {
   const stations = quality === "high" ? 42 : 30;
   const perStation = quality === "high" ? 7 : 6;
@@ -278,6 +284,7 @@ export default function BeadField({
         spinRef={spinRef}
         stations={stations}
         perStation={perStation}
+        columns={columns}
       />
     </Canvas>
   );
