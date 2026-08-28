@@ -80,6 +80,23 @@ export function WallStage({ products }: { products: Product[] }) {
   // strip of cards. That range takes the whole board instead.
   const soleRange = byCategory.length === 1;
 
+  // The board is divided by how many ranges actually have stock, not by a
+  // fixed four, so two populated ranges do not leave half the wall bare.
+  // Written out in full because Tailwind cannot see a constructed class name.
+  const columnClass =
+    ["", "", "lg:grid-cols-2", "lg:grid-cols-3", "lg:grid-cols-4"][
+      Math.min(byCategory.length, 4)
+    ] || "lg:grid-cols-4";
+
+  // How many pieces sit side by side inside one range column. A wide column
+  // holding one card per row would print cards half a metre across, so the
+  // fewer ranges there are, the more pieces share a row.
+  const pieceClass = soleRange
+    ? "lg:grid-cols-4"
+    : byCategory.length === 2
+      ? "lg:grid-cols-2"
+      : "lg:grid-cols-1 lg:gap-y-12";
+
   return (
     <div ref={stageRef} className="board-ground relative">
       {/* The bead field, behind everything, sticky for the length of the stage */}
@@ -203,19 +220,17 @@ export function WallStage({ products }: { products: Product[] }) {
           </div>
 
           {byCategory.length > 0 ? (
-            /* Families are columns, not stacked rows: this is the arrangement
-               the beads fly into overhead, and it keeps the wall dense instead
-               of leaving a four-wide grid mostly empty when a colour only has
-               one or two pieces in stock. */
-            /* Narrow screens stack the families and run each one's pieces
-               two-up, because four side-by-side columns of uneven length
-               leave long dead gaps on a phone. From lg the families become
-               the columns the beads overhead fly into. */
+            /* Ranges are columns from lg up — the arrangement the beads
+               overhead fly into. Narrow screens stack them instead, because
+               side-by-side columns of uneven length leave long dead gaps on a
+               phone. Both the number of columns and the number of pieces per
+               row follow how much stock there actually is, so the wall stays
+               dense whether one range is filled or all six are. */
             <div
               className={
                 soleRange
                   ? "mt-12"
-                  : "mt-12 grid grid-cols-1 gap-y-14 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-0"
+                  : `mt-12 grid grid-cols-1 gap-y-14 lg:gap-x-7 lg:gap-y-0 ${columnClass}`
               }
             >
               {byCategory.map(({ category, pieces }, columnIndex) => (
@@ -243,9 +258,7 @@ export function WallStage({ products }: { products: Product[] }) {
 
                   <div
                     className={
-                      soleRange
-                        ? "mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-4"
-                        : "mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-1 lg:gap-y-12"
+                      `mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 sm:gap-x-7 ${pieceClass}`
                     }
                   >
                     {pieces.map((piece, i) => (
