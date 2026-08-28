@@ -11,15 +11,21 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
             <nav className="flex gap-1">
               <Link
                 href="/admin"
-                className="rounded-full px-3 py-1.5 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
+                className="flex min-h-11 items-center rounded-full px-3 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
               >
                 My pieces
               </Link>
               <Link
                 href="/admin/orders"
-                className="rounded-full px-3 py-1.5 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
+                className="flex min-h-11 items-center rounded-full px-3 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
               >
                 Orders
+              </Link>
+              <Link
+                href="/admin/account"
+                className="flex min-h-11 items-center rounded-full px-3 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
+              >
+                My login
               </Link>
             </nav>
           </div>
