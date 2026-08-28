@@ -41,11 +41,8 @@ export default async function CategoryPage({
     <>
       <SiteHeader />
       <main className="flex-1">
-        <header className="border-b border-neutral/60 bg-neutral">
+        <header className="board-ground border-b border-ink/10">
           <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-            <p className="text-[0.7rem] uppercase tracking-[0.2em] text-primary/75">
-              The wall
-            </p>
             <h1 className="mt-2 font-display text-3xl tracking-tight text-ink sm:text-4xl">
               {CATEGORY_LABELS[key]}
             </h1>
@@ -55,7 +52,7 @@ export default async function CategoryPage({
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="board-ground"><div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           {pieces.length > 0 ? (
             <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4">
               {pieces.map((piece, i) => (
@@ -86,7 +83,7 @@ export default async function CategoryPage({
               </a>
             </div>
           )}
-        </div>
+        </div></div>
       </main>
       <SiteFooter />
     </>

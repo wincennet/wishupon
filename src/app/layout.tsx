@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Archivo } from "next/font/google";
+import { Bricolage_Grotesque, Archivo, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { FlyToCartProvider } from "@/components/cart/FlyToCart";
 
 /* Faces chosen against the brief's pinned cream ground. A high-contrast display
    serif on warm cream is the exact cluster generated interfaces fall into, so
@@ -15,6 +16,15 @@ const display = Bricolage_Grotesque({
 
 const body = Archivo({
   variable: "--font-body-face",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+/* Piece names get a serif with a real hand to it — the register jewellery is
+   named in — while the grotesque keeps the interface voice. */
+const serif = Instrument_Serif({
+  variable: "--font-serif-face",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -50,14 +60,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${serif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {/* Emitted as a real HTML comment, not a JSX one: React strips JSX
             comments at compile time, and a direction contract that does not
             survive the production build cannot be audited. */}
         <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: DIRECTION_CONTRACT }} />
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <FlyToCartProvider>{children}</FlyToCartProvider>
+        </CartProvider>
       </body>
     </html>
   );

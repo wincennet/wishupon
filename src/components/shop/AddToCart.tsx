@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
+import { useFlyToCart } from "@/components/cart/FlyToCart";
 import type { Product } from "@/lib/types";
 import { whatsappLink } from "@/lib/constants";
+import { familyOf } from "@/lib/palette";
 
 export function AddToCart({ product }: { product: Product }) {
   const { add, items } = useCart();
+  const { fly } = useFlyToCart();
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [added, setAdded] = useState(false);
 
   const inCart = items.find((i) => i.product_id === product.id)?.quantity ?? 0;
@@ -41,11 +45,17 @@ export function AddToCart({ product }: { product: Product }) {
     <div>
       <div className="flex flex-wrap items-center gap-3">
         <button
+          ref={buttonRef}
           type="button"
           disabled={maxed}
           onClick={() => {
             add(product);
             setAdded(true);
+            // The beads that fly are this piece's own colours, so the burst
+            // reads as the object moving rather than generic confetti.
+            if (buttonRef.current) {
+              fly(buttonRef.current, familyOf(product.name).beads);
+            }
           }}
           className="rounded-full bg-primary px-7 py-3 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-45"
         >

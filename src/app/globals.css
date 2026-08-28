@@ -15,6 +15,7 @@
 
   --font-display: var(--font-display-face), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-body-face), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-face), Georgia, serif;
 
   /* The board the cards are pinned to, and the card's own cast shadow. */
   --shadow-card: 0 1px 2px rgba(42, 27, 61, 0.08), 0 6px 16px -6px rgba(42, 27, 61, 0.18);
@@ -27,6 +28,70 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Browser surfaces belong to the palette too. Left alone, selection paints
+   OS blue and the scrollbar paints grey, which is the cheapest tell that a
+   page was assembled rather than designed. */
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  color: var(--color-ink);
+}
+
+html {
+  scrollbar-color: color-mix(in srgb, var(--color-primary) 45%, transparent)
+    transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-primary) 38%, transparent);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  background-clip: content-box;
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--color-primary);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* The board the cards hang on: kraft beige with a woven tooth, plus a soft
+   vignette so the wall has a lit centre and falls off at the edges. */
+.board-ground {
+  background-color: var(--color-neutral);
+  background-image:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      rgba(255, 255, 255, 0.34),
+      transparent 62%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(42, 27, 61, 0.045) 0 1px,
+      transparent 1px 6px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(42, 27, 61, 0.045) 0 1px,
+      transparent 1px 6px
+    );
 }
 
 body {
