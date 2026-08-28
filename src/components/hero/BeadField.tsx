@@ -39,9 +39,6 @@ const SLEEVE_WIDTH = RING_RADIUS * 2 + TUBE_RADIUS * 2;
  *  actually wide, so the beads reach both edges of the page on a monitor and
  *  do not all pile up off-screen on a phone. */
 const COLUMN_SPAN = 8.4;
-/** The depth the settled beads occupy, on average — the plane whose width the
- *  field has to cover to look like it fills the page. */
-const FIELD_DEPTH = -6.5;
 
 function useBeads(stations: number, perStation: number, columnCount: number): Bead[] {
   return useMemo(() => {
@@ -170,12 +167,13 @@ function Beads({
     const halfHAt = (depth: number) => halfAngle * (cam.position.z - depth);
     const halfWAt = (depth: number) => halfHAt(depth) * aspect;
 
-    const fieldHalfW = halfWAt(FIELD_DEPTH);
-    const fieldHalfH = halfHAt(FIELD_DEPTH);
-    // Stretches the authored column layout across the actual frame. Clamped so
-    // a very wide monitor does not tear the columns apart, and a phone does not
-    // squeeze them into a single stripe.
-    const spread = THREE.MathUtils.clamp((fieldHalfW * 2) / COLUMN_SPAN, 0.72, 3.4);
+    // Stretches the authored column layout across the actual frame, per bead
+    // and by its own depth. One spread for the whole field looked right at the
+    // front and pinched toward the middle at the back, because a bead six
+    // units further away covers less of the screen for the same world offset —
+    // which read as the field petering out before it reached the page edge.
+    const spreadAt = (depth: number) =>
+      THREE.MathUtils.clamp((halfWAt(depth) * 2) / COLUMN_SPAN, 0.72, 4.4);
 
     if (groupRef.current) {
       // Drag momentum bleeds off instead of stopping dead; idle drift takes
@@ -238,7 +236,7 @@ function Beads({
       for (let i = 0; i < beads.length; i++) {
         const bead = beads[i];
         const a = bead.phase;
-        phys!.pos[i * 3] = bead.column.x * spread;
+        phys!.pos[i * 3] = bead.column.x * spreadAt(bead.column.z);
         phys!.pos[i * 3 + 1] = bead.column.y;
         phys!.pos[i * 3 + 2] = bead.column.z;
         phys!.vel[i * 3] = Math.cos(a) * (0.5 + bead.drift * 0.7);
@@ -258,9 +256,6 @@ function Beads({
     // out from the viewport each frame. Fixed bounds meant the field stopped
     // short of both margins on a wide screen and left a bare strip down the
     // sides of the page.
-    const X_BOUND = fieldHalfW + 0.8;
-    const Y_FLOOR = -(fieldHalfH + 0.5);
-    const Y_CEIL = fieldHalfH + 0.5;
     const Z_NEAR = -3.2;
     const Z_FAR = -11;
     const GRAVITY = -2.4;
@@ -273,6 +268,13 @@ function Beads({
         const ix = i * 3;
         phys!.vel[ix + 1] += GRAVITY * dt;
 
+        // Each bead bounces off the frame at its own depth, so a bead far back
+        // travels further before it turns around and still turns around level
+        // with the edge of the screen. Shared bounds sent the back of the field
+        // into a narrower box than the front, thinning the margins.
+        const xWall = halfWAt(phys!.pos[ix + 2]) + 0.6;
+        const yWall = halfHAt(phys!.pos[ix + 2]) + 0.4;
+
         phys!.pos[ix] += phys!.vel[ix] * dt;
         phys!.pos[ix + 1] += phys!.vel[ix + 1] * dt;
         phys!.pos[ix + 2] += phys!.vel[ix + 2] * dt;
@@ -280,28 +282,29 @@ function Beads({
         // Floor contact. A bead with energy left bounces; one that has spent
         // itself is dropped in again from the top somewhere new, so the field
         // keeps raining instead of silting up along the bottom edge.
-        if (phys!.pos[ix + 1] < Y_FLOOR) {
+        if (phys!.pos[ix + 1] < -yWall) {
           if (Math.abs(phys!.vel[ix + 1]) < 1.1) {
-            phys!.pos[ix] = (Math.random() - 0.5) * 2 * X_BOUND;
-            phys!.pos[ix + 1] = Y_CEIL;
-            phys!.pos[ix + 2] = Z_FAR + Math.random() * (Z_NEAR - Z_FAR);
+            const depth = Z_FAR + Math.random() * (Z_NEAR - Z_FAR);
+            phys!.pos[ix] = (Math.random() - 0.5) * 2 * (halfWAt(depth) + 0.6);
+            phys!.pos[ix + 1] = halfHAt(depth) + 0.4;
+            phys!.pos[ix + 2] = depth;
             phys!.vel[ix] = (Math.random() - 0.5) * 0.9;
             phys!.vel[ix + 1] = -0.2 - Math.random() * 0.7;
             phys!.vel[ix + 2] = (Math.random() - 0.5) * 0.5;
           } else {
-            phys!.pos[ix + 1] = Y_FLOOR;
+            phys!.pos[ix + 1] = -yWall;
             phys!.vel[ix + 1] = Math.abs(phys!.vel[ix + 1]) * RESTITUTION;
             // Each bounce throws it off at its own angle rather than straight up.
             phys!.vel[ix] += (Math.random() - 0.5) * 1.1;
             phys!.vel[ix + 2] += (Math.random() - 0.5) * 0.6;
           }
         }
-        if (phys!.pos[ix + 1] > Y_CEIL + 1) {
-          phys!.pos[ix + 1] = Y_CEIL;
+        if (phys!.pos[ix + 1] > yWall + 1) {
+          phys!.pos[ix + 1] = yWall;
           phys!.vel[ix + 1] = -Math.abs(phys!.vel[ix + 1]) * RESTITUTION;
         }
-        if (phys!.pos[ix] < -X_BOUND || phys!.pos[ix] > X_BOUND) {
-          phys!.pos[ix] = THREE.MathUtils.clamp(phys!.pos[ix], -X_BOUND, X_BOUND);
+        if (phys!.pos[ix] < -xWall || phys!.pos[ix] > xWall) {
+          phys!.pos[ix] = THREE.MathUtils.clamp(phys!.pos[ix], -xWall, xWall);
           phys!.vel[ix] *= -RESTITUTION;
         }
         if (phys!.pos[ix + 2] < Z_FAR || phys!.pos[ix + 2] > Z_NEAR) {
@@ -325,7 +328,11 @@ function Beads({
       );
       const eased = easeInOut(local);
 
-      colTarget.set(bead.column.x * spread, bead.column.y, bead.column.z);
+      colTarget.set(
+        bead.column.x * spreadAt(bead.column.z),
+        bead.column.y,
+        bead.column.z
+      );
       scratch.lerpVectors(bead.ring, colTarget, eased);
 
       if (eased > 0) {
@@ -405,8 +412,12 @@ export default function BeadField({
    *  sort into those columns stays true as stock changes. */
   columns?: number;
 }) {
-  const stations = quality === "high" ? 42 : 30;
-  const perStation = quality === "high" ? 7 : 6;
+  // The settled field now covers the whole page rather than a centre column,
+  // so the same bead count spread thin and read as scattered crumbs. More
+  // beads cost one draw call either way — they are a single instanced mesh —
+  // and the denser sleeve is better as a bracelet too.
+  const stations = quality === "high" ? 54 : 34;
+  const perStation = quality === "high" ? 8 : 6;
 
   // Drag velocity, handed to the scene as a ref so dragging never re-renders.
   const spinRef = useRef(0);
