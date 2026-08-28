@@ -36,7 +36,8 @@ export const CATEGORIES: CategoryMeta[] = [
   {
     id: "ringlets",
     label: "Ringlets",
-    blurb: "Small beaded rings, worn one at a time or stacked.",
+    blurb:
+      "Hand harnesses: a ring joined by a beaded chain to a matching bracelet, worn as one piece across the back of the hand.",
     accent: "#c8415b",
     beads: ["#9d2235", "#c8415b", "#e08a9c", "#7a1526"],
   },
