@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/lib/categories";
 import type { Category } from "@/lib/types";
 
 /** One real photograph per range where the shop has one. A range without a
- *  photograph yet shows its own bead colours as quiet vertical bands. */
+ *  photograph yet shows one soft tint of its colour and its initial. */
 const COVER: Partial<Record<Category, string>> = {
   bangles: "/products/beaded-accessories/beaded-07-lilac-pearl-flatlay.jpg",
   "hoop-earrings": "/products/hoop-earrings/hoop-02-pastel-pearl-chain.jpg",
@@ -49,14 +49,14 @@ export function RangeSwatches() {
                         className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
                       />
                     ) : (
-                      <span aria-hidden className="absolute inset-0 flex">
-                        {c.beads.map((hex) => (
-                          <span
-                            key={hex}
-                            className="flex-1"
-                            style={{ background: hex, opacity: 0.82 }}
-                          />
-                        ))}
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ background: `${c.accent}33` }}
+                      >
+                        <span className="font-serif text-[7rem] italic leading-none text-ink/15">
+                          {c.label.charAt(0)}
+                        </span>
                       </span>
                     )}
                   </span>

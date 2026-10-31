@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { whatsappLink } from "@/lib/constants";
 
-/** How an order goes, told as beads on a string. The four steps are exactly
+/** How an order goes, as four plain steps. The four steps are exactly
  *  what happens at checkout, so nothing here is a claim the shop cannot keep. */
 const STEPS = [
   {
@@ -22,9 +22,6 @@ const STEPS = [
     body: "Cash on delivery, or a bank transfer if you would rather.",
   },
 ];
-
-// Deep enough that the white numbers stay readable; one per range's palette.
-const BEAD_COLOURS = ["#7d54a3", "#b8892f", "#c8415b", "#4a7c8c"];
 
 export function BrandStory() {
   return (
@@ -62,26 +59,24 @@ export function BrandStory() {
             Every piece is strung here in Pakistan and never repeated.
           </p>
 
-          {/* Beads on a thread: one bead per step. */}
-          <ol className="relative mt-9 space-y-7">
-            <span
-              aria-hidden
-              className="absolute bottom-3 left-[13px] top-3 w-px border-l-[1.5px] border-dashed border-ink/25"
-            />
+          {/* Four steps as a quiet numbered list: hairlines and one colour. */}
+          <ol className="mt-9 border-b border-ink/10">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="relative flex gap-5">
+              <li
+                key={step.title}
+                className="grid grid-cols-[3rem_1fr] gap-x-2 border-t border-ink/10 py-5"
+              >
                 <span
                   aria-hidden
-                  className="relative z-10 mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.72rem] font-medium text-white shadow-[inset_-2px_-3px_5px_rgba(0,0,0,0.22),inset_2px_2px_4px_rgba(255,255,255,0.4)]"
-                  style={{ background: BEAD_COLOURS[i % BEAD_COLOURS.length] }}
+                  className="pt-0.5 font-serif text-[1.15rem] italic text-primary"
                 >
-                  {i + 1}
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3 className="font-serif text-[1.25rem] leading-tight text-ink">
+                  <h3 className="font-serif text-[1.3rem] leading-tight text-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-1 max-w-sm text-[0.9rem] leading-relaxed text-ink-soft">
+                  <p className="mt-1.5 max-w-sm text-[0.9rem] leading-relaxed text-ink-soft">
                     {step.body}
                   </p>
                 </div>
