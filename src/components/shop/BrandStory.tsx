@@ -1,154 +1,113 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DELIVERY } from "@/lib/constants";
+import { whatsappLink } from "@/lib/constants";
 import { PushPin } from "./PushPin";
 
-const FEATURES = [
+/** How an order goes, told as beads on a string. The four steps are exactly
+ *  what happens at checkout, so nothing here is a claim the shop cannot keep. */
+const STEPS = [
   {
-    title: "Made to Order",
-    body: "Tell us your colours and your size. We make it for you.",
-    icon: (
-      <path d="M12 21s-7-4.4-9.3-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9Z" />
-    ),
+    title: "Choose your colour",
+    body: "Pick a piece from the wall, or tell us your colours and your size.",
   },
   {
-    title: "One of a Kind",
-    body: "Each piece is made once. No repeats, no mass production.",
-    icon: <path d="m6 3 -3 6 9 12 9-12-3-6H6Zm-3 6h18M9 3l3 18M15 3l-3 18" />,
+    title: "We call you",
+    body: "A quick phone call to confirm your order and where it is going.",
   },
   {
-    title: "Everyday Prices",
-    body: "Handmade you can wear on a Tuesday, not only at weddings.",
-    icon: (
-      <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8ZM7.5 7.5h.01" />
-    ),
+    title: "Strung and posted",
+    body: "Made by hand, then sent by courier anywhere in Pakistan.",
   },
   {
-    title: "Pay on Delivery",
-    body: DELIVERY.note,
-    icon: (
-      <path d="M1 6h13v10H1zM14 10h4l3 3v3h-7M5.5 19a1.5 1.5 0 1 0 0-.01M17.5 19a1.5 1.5 0 1 0 0-.01" />
-    ),
+    title: "Pay at your door",
+    body: "Cash on delivery, or a bank transfer if you would rather.",
   },
 ];
 
-const POINTS = [
-  "Strung by hand, one piece at a time",
-  "A piece that is made once, never mass produced",
-  "Your colours and your wrist size, if you ask",
-  "Cash on delivery across Pakistan",
-  "A real person answers on WhatsApp",
-];
+// Deep enough that the white numbers stay readable; one per range's palette.
+const BEAD_COLOURS = ["#7d54a3", "#b8892f", "#c8415b", "#4a7c8c"];
 
-/** The reference store's About block and What you get, written with claims
- *  this shop can stand behind: no sales counts and no review claims. */
 export function BrandStory() {
   return (
-    <>
-      <section id="about" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
-        <div className="grid items-stretch gap-6 lg:grid-cols-2 lg:gap-8">
-          <div className="scene depth-2 relative overflow-hidden rounded-[3px] bg-primary p-9 text-white sm:p-12">
-            <div className="anim-float absolute -bottom-10 -right-10 h-52 w-52 rounded-full bg-accent opacity-20" />
-            <span className="text-xs uppercase tracking-[0.25em] text-accent">
-              About Us
+    <section id="about" className="bg-background">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1fr_1.05fr] lg:gap-20 2xl:max-w-7xl">
+        {/* The workbench photograph, with a note pinned to its corner. */}
+        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-neutral-soft shadow-[0_30px_60px_-30px_rgba(42,27,61,0.45)]">
+            <Image
+              src="/products/beaded-accessories/beaded-04-multicolor-worn.jpg"
+              alt="Handmade multicolour beaded bangles worn on the wrist"
+              fill
+              sizes="(max-width: 1024px) 90vw, 480px"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="absolute -bottom-6 right-2 w-52 rotate-[3deg] rounded-2xl bg-background px-5 pb-4 pt-6 shadow-[var(--shadow-card-lifted)] sm:-right-6 sm:w-60">
+            <span className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[45%]">
+              <PushPin size={22} />
             </span>
-            <h2 className="mt-4 font-serif text-3xl leading-tight sm:text-4xl">
-              Made by hand, made for you
-            </h2>
-            <p className="mt-5 max-w-md leading-relaxed text-white/85">
-              WishUpon is one maker, a table of beads and a lot of patience.
-              Every bracelet, hoop and ringlet is strung here in Pakistan and
-              never repeated.
-            </p>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
+            <p className="font-serif text-[1.2rem] italic leading-snug text-primary">
               Wear it on an ordinary Tuesday. That is what it is for.
             </p>
-            <Link
-              href="/shop/bangles"
-              className="btn mt-8 bg-background px-6 py-3 text-sm text-primary"
-            >
-              See what's ready
-            </Link>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:gap-5">
-            {FEATURES.map((f) => (
-              <div
-                key={f.title}
-                className="relative flex flex-col gap-3 rounded-[3px] bg-background p-6 pt-8 shadow-[var(--shadow-card)]"
-              >
-                <span className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[45%]">
-                  <PushPin size={20} />
+        <div>
+          <p className="text-[0.78rem] font-medium uppercase tracking-[0.2em] text-primary/70">
+            About WishUpon
+          </p>
+          <h2 className="mt-3 font-serif text-4xl leading-[1.05] tracking-tight text-ink sm:text-5xl">
+            From your colour
+            <span className="block italic text-primary">to your door</span>
+          </h2>
+          <p className="mt-5 max-w-md text-[0.98rem] leading-relaxed text-ink-soft">
+            WishUpon is one maker, a table of beads and a lot of patience.
+            Every piece is strung here in Pakistan and never repeated.
+          </p>
+
+          {/* Beads on a thread: one bead per step. */}
+          <ol className="relative mt-9 space-y-7">
+            <span
+              aria-hidden
+              className="absolute bottom-3 left-[13px] top-3 w-px border-l-[1.5px] border-dashed border-ink/25"
+            />
+            {STEPS.map((step, i) => (
+              <li key={step.title} className="relative flex gap-5">
+                <span
+                  aria-hidden
+                  className="relative z-10 mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.72rem] font-medium text-white shadow-[inset_-2px_-3px_5px_rgba(0,0,0,0.22),inset_2px_2px_4px_rgba(255,255,255,0.4)]"
+                  style={{ background: BEAD_COLOURS[i % BEAD_COLOURS.length] }}
+                >
+                  {i + 1}
                 </span>
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-[3px] bg-primary text-white">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden
-                  >
-                    {f.icon}
-                  </svg>
-                </span>
-                <p className="font-serif text-xl text-primary">
-                  {f.title}
-                </p>
-                <p className="text-sm text-ink">{f.body}</p>
-              </div>
+                <div>
+                  <h3 className="font-serif text-[1.25rem] leading-tight text-ink">
+                    {step.title}
+                  </h3>
+                  <p className="mt-1 max-w-sm text-[0.9rem] leading-relaxed text-ink-soft">
+                    {step.body}
+                  </p>
+                </div>
+              </li>
             ))}
-          </div>
-        </div>
-      </section>
+          </ol>
 
-      <section className="bg-neutral-soft py-16 sm:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14">
-          <div className="scene">
-            <div className="tilt depth-3 relative aspect-[4/3] overflow-hidden rounded-[3px] bg-neutral">
-              <Image
-                src="/products/beaded-accessories/beaded-04-multicolor-worn.jpg"
-                alt="Handmade multicolour beaded bangles worn on the wrist"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
-          <div>
-            <h2 className="font-serif text-3xl text-primary sm:text-4xl">
-              What you get
-            </h2>
-            <ul className="mt-6 space-y-4">
-              {POINTS.map((point) => (
-                <li key={point} className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ok p-1 text-white">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden
-                    >
-                      <path d="m5 12 5 5 9-10" />
-                    </svg>
-                  </span>
-                  <span className="text-[0.95rem] text-ink">{point}</span>
-                </li>
-              ))}
-            </ul>
-            <Link href="/shop/bangles" className="btn btn-primary mt-9 px-7 py-3.5 text-sm">
-              See the wall
+          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3">
+            <Link href="#wall" className="btn btn-primary min-h-12 px-8 text-[0.92rem]">
+              See what is ready
             </Link>
+            <a
+              href={whatsappLink("Assalam o alaikum! I'd like a custom piece from WishUpon.")}
+              target="_blank"
+              rel="noreferrer"
+              className="link-underline flex min-h-11 items-center text-[0.9rem] font-medium text-ink"
+            >
+              Ask for a custom piece
+            </a>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
