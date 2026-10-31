@@ -3,6 +3,7 @@ import { saveProduct } from "@/app/admin/actions";
 import type { Product } from "@/lib/types";
 import { CATEGORIES } from "@/lib/categories";
 import { PhotoUploader } from "./PhotoUploader";
+import { SubmitButton } from "./SubmitButton";
 import { EXTENDED_SCHEMA } from "@/lib/features";
 
 /** One form for both adding and editing. Labels are written the way the
@@ -162,12 +163,11 @@ export function ProductForm({ product }: { product?: Product }) {
       </label>
 
       <div className="flex items-center gap-3 border-t border-neutral pt-5">
-        <button
-          type="submit"
+        <SubmitButton
           className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-7 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
         >
           {product ? "Save changes" : "Add this piece"}
-        </button>
+        </SubmitButton>
         <Link
           href="/admin"
           className="text-[0.85rem] text-ink-soft underline underline-offset-2 hover:text-primary"

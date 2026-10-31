@@ -5,7 +5,14 @@ import { AdminStats } from "@/components/admin/AdminStats";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/categories";
-import { adjustStock, archiveProduct, restoreProduct, setStock } from "@/app/admin/actions";
+import {
+  adjustStock,
+  archiveProduct,
+  deleteProduct,
+  restoreProduct,
+  setStock,
+} from "@/app/admin/actions";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 
 export const dynamic = "force-dynamic";
 
@@ -159,6 +166,27 @@ export default async function AdminProductsPage() {
                       {product.is_active ? "Hide" : "Show again"}
                     </button>
                   </form>
+
+                  <details className="relative">
+                    <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-full px-3 text-[0.8rem] text-err hover:bg-black/5">
+                      Delete
+                    </summary>
+                    <form
+                      action={deleteProduct}
+                      className="absolute right-0 z-10 mt-1 w-60 rounded-xl border border-ink/10 bg-background p-3 shadow-[var(--shadow-card)]"
+                    >
+                      <input type="hidden" name="id" value={product.id} />
+                      <p className="text-[0.8rem] leading-snug text-ink">
+                        Delete this piece for good? This cannot be undone.
+                      </p>
+                      <SubmitButton
+                        pendingText="Deleting…"
+                        className="mt-3 min-h-9 rounded-lg bg-err px-4 text-[0.8rem] font-medium text-ink"
+                      >
+                        Yes, delete it
+                      </SubmitButton>
+                    </form>
+                  </details>
                 </div>
               </div>
             </li>

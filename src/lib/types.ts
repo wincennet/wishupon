@@ -4,6 +4,7 @@ export type Category =
   | "ringlets"
   | "necklaces"
   | "special-packs"
+  | "kids"
   | "custom";
 
 export type OrderStatus = "pending" | "confirmed" | "fulfilled" | "cancelled";

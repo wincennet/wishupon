@@ -65,11 +65,33 @@ export async function saveProduct(formData: FormData) {
   if (id) {
     await supabase.from("products").update(record).eq("id", id);
   } else {
-    await supabase.from("products").insert(record);
+    // A repeated tap or a retried request sends the same piece again. Skip it
+    // if an identical one was added in the last two minutes.
+    const since = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+    const { data: twin } = await supabase
+      .from("products")
+      .select("id")
+      .eq("name", record.name as string)
+      .eq("price", record.price as number)
+      .eq("category", record.category as string)
+      .gte("created_at", since)
+      .limit(1);
+    if (!twin || twin.length === 0) {
+      await supabase.from("products").insert(record);
+    }
   }
 
   refreshShop();
   redirect("/admin");
+}
+
+/** Remove a piece for good. Orders keep their own copy of what was bought, so
+ *  past orders are not affected. The confirm step lives on the pieces page. */
+export async function deleteProduct(formData: FormData) {
+  const supabase = await requireClient();
+  await supabase.from("products").delete().eq("id", String(formData.get("id")));
+  refreshShop();
+  revalidatePath("/admin");
 }
 
 /** Stock in / stock out, the two buttons she will press most often. */

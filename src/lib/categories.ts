@@ -1,6 +1,6 @@
 import type { Category } from "./types";
 
-/** The shop's six ranges. This is the single place the order, the labels and
+/** The shop's seven ranges. This is the single place the order, the labels and
  *  the accent colour of every category live, so the nav, the wall, the
  *  category pages and the admin form can never drift apart. */
 export type CategoryMeta = {
@@ -55,6 +55,14 @@ export const CATEGORIES: CategoryMeta[] = [
       "Matched sets and gift bundles, priced below the pieces bought separately.",
     accent: "#c9a227",
     beads: ["#c9a227", "#e3c65a", "#8a6f1c", "#f2e3a8"],
+  },
+  {
+    id: "kids",
+    label: "Kids Collection",
+    blurb:
+      "Small, soft-edged pieces sized for little wrists and necks, made with the same care.",
+    accent: "#e59aa8",
+    beads: ["#e59aa8", "#f4c6ce", "#9cc7e8", "#fbe3a6"],
   },
   {
     id: "custom",
