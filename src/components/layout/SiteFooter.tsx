@@ -3,21 +3,19 @@ import Image from "next/image";
 import { CATEGORIES } from "@/lib/categories";
 import { BRAND, DELIVERY, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/constants";
 
-/** The footer in the reference store's brand-colour band: about + links,
- *  categories, then shipping and payment. */
 export function SiteFooter() {
   return (
-    <footer className="mt-auto bg-primary text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
-        <div>
+    <footer className="mt-auto border-t border-ink/10 bg-background">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-12">
+        <div className="md:col-span-5">
           <Image
             src="/logo/wordmark.png"
             alt={BRAND.name}
             width={524}
             height={258}
-            className="h-12 w-auto brightness-0 invert"
+            className="h-12 w-auto"
           />
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/80">
+          <p className="mt-5 max-w-xs text-[0.88rem] leading-relaxed text-ink-soft">
             {BRAND.tagline}. Handmade beaded and steel accessories, made in
             Pakistan and posted to your door.
           </p>
@@ -25,45 +23,22 @@ export function SiteFooter() {
             href={whatsappLink("Assalam o alaikum! I have a question about WishUpon.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white/10 px-4 text-sm transition hover:bg-white/20"
+            className="link-underline mt-5 inline-flex min-h-11 items-center text-[0.88rem] font-medium text-ink"
           >
             WhatsApp {WHATSAPP_DISPLAY}
           </a>
         </div>
 
-        <div>
-          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
-            Explore
-          </p>
-          <ul className="space-y-1 text-sm text-white/85">
-            {[
-              ["/", "Home"],
-              ["/shop/bangles", "Shop"],
-              ["/about", "About & custom orders"],
-              ["/cart", "Cart"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="flex min-h-11 items-center transition hover:text-white"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
+        <div className="md:col-span-3">
+          <p className="text-[0.7rem] font-medium uppercase tracking-[0.22em] text-ink-soft">
             Ranges
           </p>
-          <ul className="space-y-1 text-sm text-white/85">
+          <ul className="mt-4 text-[0.9rem] text-ink">
             {CATEGORIES.map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/shop/${c.id}`}
-                  className="flex min-h-11 items-center transition hover:text-white"
+                  className="flex min-h-11 items-center transition-colors hover:text-primary"
                 >
                   {c.label}
                 </Link>
@@ -72,41 +47,39 @@ export function SiteFooter() {
           </ul>
         </div>
 
-        <div>
-          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
+        <div className="md:col-span-4">
+          <p className="text-[0.7rem] font-medium uppercase tracking-[0.22em] text-ink-soft">
             Delivery &amp; payment
           </p>
-          <ul className="space-y-2 text-sm text-white/85">
-            <li>{DELIVERY.note}</li>
-            <li>Payment: cash on delivery, or bank transfer</li>
-            <li>Every order is confirmed by phone before it ships</li>
-          </ul>
+          <p className="mt-4 max-w-xs text-[0.88rem] leading-relaxed text-ink-soft">
+            {DELIVERY.note} Pay on delivery, or by bank transfer.
+          </p>
         </div>
       </div>
 
-      <div className="border-t border-white/15 px-4 py-4 text-xs text-white/60">
-        <nav
-          aria-label="Policies"
-          className="mx-auto mb-1 flex max-w-7xl flex-wrap justify-center gap-x-1"
-        >
-          {[
-            ["/shipping-returns", "Delivery & returns"],
-            ["/privacy", "Privacy"],
-            ["/terms", "Terms"],
-            ["/contact", "Contact"],
-          ].map(([href, label]) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex min-h-11 items-center px-3 transition hover:text-white"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <p className="text-center">
-          © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
-        </p>
+      <div className="border-t border-ink/10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 px-5 py-2 text-[0.78rem] text-ink-soft sm:px-8">
+          <p className="py-3">
+            © {new Date().getFullYear()} {BRAND.name}
+          </p>
+          <nav aria-label="Policies" className="flex flex-wrap">
+            {[
+              ["/about", "About"],
+              ["/shipping-returns", "Delivery & returns"],
+              ["/privacy", "Privacy"],
+              ["/terms", "Terms"],
+              ["/contact", "Contact"],
+            ].map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                className="flex min-h-11 items-center pr-5 transition-colors hover:text-primary"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   );

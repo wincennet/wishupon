@@ -62,9 +62,9 @@ export function WallStage({ products }: { products: Product[] }) {
     <div className="board-ground board-continued relative">
       {/* ── The wall ─────────────────────────────────────────────────────── */}
       <section id="wall" className="relative z-10 scroll-mt-16">
-        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20 2xl:max-w-7xl">
+        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 md:py-28">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
+            <h2 className="font-serif text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.02em] text-ink">
               Ready to post
             </h2>
             <Link

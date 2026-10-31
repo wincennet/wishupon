@@ -212,7 +212,7 @@ function WishlistDrawer({
         role="dialog"
         aria-label="Wishlist"
         aria-hidden={!open}
-        className={`depth-3 absolute right-0 top-0 bg-background flex h-full w-full max-w-md flex-col transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`border-l border-ink/10 absolute right-0 top-0 bg-background flex h-full w-full max-w-md flex-col transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex items-center justify-between border-b border-neutral p-5">
           <h2 className="font-display text-xl font-bold text-primary">
@@ -246,11 +246,11 @@ function WishlistDrawer({
             </div>
           ) : (
             products.map((p) => (
-              <div key={p.id} className="depth-1 flex gap-3 rounded-[3px] bg-white p-3">
+              <div key={p.id} className="border border-ink/10 flex gap-3 rounded-xl bg-white p-3">
                 <button
                   type="button"
                   onClick={() => onView(p)}
-                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[2px]"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg"
                   aria-label={`View ${p.name}`}
                 >
                   <Thumb product={p} size="80px" />
@@ -280,7 +280,7 @@ function WishlistDrawer({
                       type="button"
                       onClick={() => onRemove(p.id)}
                       aria-label={`Remove ${p.name} from wishlist`}
-                      className="ml-auto flex h-11 w-11 items-center justify-center rounded-[2px] text-err hover:bg-black/5"
+                      className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-err hover:bg-black/5"
                     >
                       {Icon.trash}
                     </button>
@@ -364,7 +364,7 @@ function SearchPanel({
         role="dialog"
         aria-label="Search"
         aria-hidden={!open}
-        className={`depth-3 absolute inset-x-0 top-0 bg-background max-h-[85vh] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0" : "-translate-y-full"}`}
+        className={`border-b border-ink/10 absolute inset-x-0 top-0 bg-background max-h-[85vh] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="mx-auto max-w-3xl p-5">
           <div className="flex items-center gap-3">
@@ -418,7 +418,7 @@ function SearchPanel({
                     key={p.id}
                     type="button"
                     onClick={() => onPick(p)}
-                    className="depth-1 hover:depth-2 overflow-hidden rounded-[3px] bg-white text-left transition"
+                    className="border border-ink/10 hover:border-ink/25 overflow-hidden rounded-xl bg-white text-left transition"
                   >
                     <span className="relative block aspect-square overflow-hidden">
                       <Thumb product={p} size="(max-width: 640px) 45vw, 200px" />
@@ -469,13 +469,13 @@ function QuickView({
       <div
         role="dialog"
         aria-label={product.name}
-        className="depth-3 relative grid max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-[3px] bg-background sm:rounded-[3px] md:grid-cols-2"
+        className="border border-ink/10 relative grid max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-t-xl bg-background sm:rounded-xl md:grid-cols-2"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="glass absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full text-ink"
+          className="absolute right-3 top-3 bg-background/90 border border-ink/10 z-10 flex h-11 w-11 items-center justify-center rounded-full text-ink"
         >
           {Icon.x}
         </button>
@@ -498,7 +498,7 @@ function QuickView({
                   type="button"
                   onClick={() => setShown(i)}
                   aria-label={`Photo ${i + 1}`}
-                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-[2px] ${i === shown ? "ring-2 ring-primary" : "opacity-70"}`}
+                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg ${i === shown ? "ring-2 ring-primary" : "opacity-70"}`}
                 >
                   <Image src={src} alt="" fill sizes="64px" className="object-cover" />
                 </button>

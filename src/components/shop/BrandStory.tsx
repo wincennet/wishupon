@@ -28,11 +28,11 @@ const BEAD_COLOURS = ["#7d54a3", "#b8892f", "#c8415b", "#4a7c8c"];
 
 export function BrandStory() {
   return (
-    <section id="about" className="bg-background">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1fr_1.05fr] lg:gap-20 2xl:max-w-7xl">
+    <section id="about" className="border-t border-ink/10 bg-background">
+      <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-20 sm:px-8 md:py-28 lg:grid-cols-[1fr_1.05fr] lg:gap-24">
         {/* The workbench photograph, with a note pinned to its corner. */}
         <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-neutral-soft shadow-[0_30px_60px_-30px_rgba(42,27,61,0.45)]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-neutral-soft ">
             <Image
               src="/products/beaded-accessories/beaded-04-multicolor-worn.jpg"
               alt="Handmade multicolour beaded bangles worn on the wrist"
@@ -42,7 +42,7 @@ export function BrandStory() {
             />
           </div>
 
-          <div className="absolute -bottom-6 right-2 w-52 rotate-[3deg] rounded-2xl bg-background px-5 py-4 shadow-[var(--shadow-card-lifted)] sm:-right-6 sm:w-60">
+          <div className="absolute -bottom-6 right-3 w-56 rounded-xl border border-ink/10 bg-background px-5 py-4 sm:-right-6 sm:w-64">
             <p className="font-serif text-[1.2rem] italic leading-snug text-primary">
               Wear it on an ordinary Tuesday. That is what it is for.
             </p>
@@ -50,10 +50,10 @@ export function BrandStory() {
         </div>
 
         <div>
-          <p className="text-[0.78rem] font-medium uppercase tracking-[0.2em] text-primary/70">
+          <p className="text-[0.7rem] font-medium uppercase tracking-[0.22em] text-ink-soft">
             About WishUpon
           </p>
-          <h2 className="mt-3 font-serif text-4xl leading-[1.05] tracking-tight text-ink sm:text-5xl">
+          <h2 className="mt-3 font-serif text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.02em] text-ink">
             From your colour
             <span className="block italic text-primary">to your door</span>
           </h2>

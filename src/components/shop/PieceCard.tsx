@@ -40,15 +40,15 @@ export function PieceCard({
     <article className="group relative">
       <Link
         href={`/piece/${product.id}`}
-        className="block rounded-[22px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+        className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background"
       >
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-neutral-soft shadow-[0_18px_36px_-22px_rgba(42,27,61,0.55)] transition-shadow duration-500 group-hover:shadow-[0_28px_48px_-24px_rgba(42,27,61,0.6)]">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-neutral-soft ">
           <Image
             src={product.image_urls[0] ?? "/placeholder-piece.svg"}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 46vw, (max-width: 1024px) 31vw, 22vw"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+            className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
             style={{
               filter: soldOut
                 ? "saturate(0.35) contrast(0.95) brightness(1.04)"
