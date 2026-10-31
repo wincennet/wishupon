@@ -1,62 +1,91 @@
 import Link from "next/link";
+import Image from "next/image";
 import { CATEGORIES } from "@/lib/categories";
 import { BRAND, DELIVERY, WHATSAPP_DISPLAY, whatsappLink } from "@/lib/constants";
 
+/** The footer in the reference store's brand-colour band: about + links,
+ *  categories, then shipping and payment. */
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-neutral/60 bg-neutral-soft">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6 2xl:max-w-7xl">
+    <footer className="mt-auto bg-primary text-white">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div>
-          <p className="font-display text-lg text-primary">{BRAND.name}</p>
-          <p className="mt-2 max-w-xs text-[0.82rem] leading-relaxed text-ink-soft">
-            {BRAND.tagline}. Beaded and steel accessories, made by hand in
-            Pakistan and posted anywhere in the country.
+          <Image
+            src="/logo/wordmark.png"
+            alt={BRAND.name}
+            width={524}
+            height={258}
+            className="h-12 w-auto brightness-0 invert"
+          />
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/80">
+            {BRAND.tagline}. Handmade beaded and steel accessories, made in
+            Pakistan and posted to your door.
           </p>
+          <a
+            href={whatsappLink("Assalam o alaikum! I have a question about WishUpon.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white/10 px-4 text-sm transition hover:bg-white/20"
+          >
+            WhatsApp {WHATSAPP_DISPLAY}
+          </a>
         </div>
 
         <div>
-          <h2 className="text-[0.7rem] uppercase tracking-[0.16em] text-ink-soft">
-            Shop
-          </h2>
-          <ul className="mt-1 text-[0.85rem]">
+          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
+            Explore
+          </p>
+          <ul className="space-y-1 text-sm text-white/85">
+            {[
+              ["/", "Home"],
+              ["/shop/bangles", "Shop"],
+              ["/about", "About & custom orders"],
+              ["/cart", "Cart"],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="flex min-h-11 items-center transition hover:text-white"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
+            Ranges
+          </p>
+          <ul className="space-y-1 text-sm text-white/85">
             {CATEGORIES.map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/shop/${c.id}`}
-                  className="flex min-h-11 items-center text-ink hover:text-primary"
+                  className="flex min-h-11 items-center transition hover:text-white"
                 >
                   {c.label}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link href="/about" className="flex min-h-11 items-center text-ink hover:text-primary">
-                About &amp; custom orders
-              </Link>
-            </li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-[0.7rem] uppercase tracking-[0.16em] text-ink-soft">
-            Ask us anything
-          </h2>
-          <a
-            href={whatsappLink("Assalam o alaikum! I have a question about WishUpon.")}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-primary/35 px-4 text-[0.82rem] text-primary transition-colors hover:bg-primary hover:text-background"
-          >
-            WhatsApp {WHATSAPP_DISPLAY}
-          </a>
-          <p className="mt-3 max-w-xs text-[0.78rem] leading-relaxed text-ink-soft">
-            {DELIVERY.note}
+          <p className="mb-4 text-xs uppercase tracking-widest text-white/60">
+            Delivery &amp; payment
           </p>
+          <ul className="space-y-2 text-sm text-white/85">
+            <li>{DELIVERY.note}</li>
+            <li>Payment: cash on delivery, or bank transfer</li>
+            <li>Every order is confirmed by phone before it ships</li>
+          </ul>
         </div>
       </div>
 
-      <div className="border-t border-neutral/60 px-4 py-4 text-center text-[0.72rem] text-ink-soft sm:px-6">
-        © {new Date().getFullYear()} {BRAND.name}. Every piece made by hand.
+      <div className="border-t border-white/15 py-5 text-center text-xs text-white/60">
+        © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
       </div>
     </footer>
   );

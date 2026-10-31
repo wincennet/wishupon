@@ -14,6 +14,7 @@ import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { categoryOf, colourOf, pieceMark } from "@/lib/categories";
 import { PushPin } from "./PushPin";
+import { useShopUi } from "./ShopUi";
 
 /** One piece, one card, pinned to the board.
  *
@@ -34,6 +35,8 @@ export function PieceCard({
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const [hovering, setHovering] = useState(false);
+  const { inWishlist, toggleWishlist } = useShopUi();
+  const saved = inWishlist(product.id);
 
   const soldOut = product.stock_qty <= 0;
   const category = categoryOf(product.category);
@@ -99,6 +102,22 @@ export function PieceCard({
       <span className="pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-[45%]">
         <PushPin size={featured ? 26 : 22} />
       </span>
+
+      {/* Save for later. Sits over the card, outside the link, so tapping it
+          never opens the piece. */}
+      <button
+        type="button"
+        onClick={() => toggleWishlist(product.id)}
+        aria-pressed={saved}
+        aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+        className="absolute right-1 top-7 z-30 flex h-11 w-11 items-center justify-center text-primary"
+      >
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/90 shadow-[0_1px_3px_rgba(42,27,61,0.25)]">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden>
+            <path d="M12 20s-7-4.4-8.6-8.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8.6 4.4C19 15.6 12 20 12 20Z" />
+          </svg>
+        </span>
+      </button>
 
       <Link
         href={`/piece/${product.id}`}

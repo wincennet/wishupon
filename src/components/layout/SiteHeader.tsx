@@ -5,27 +5,22 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { useFlyToCart } from "@/components/cart/FlyToCart";
+import { useShopUi } from "@/components/shop/ShopUi";
 import { CATEGORIES } from "@/lib/categories";
+import { AnnouncementBar } from "./AnnouncementBar";
 
 export function SiteHeader() {
   const { count, ready } = useCart();
   const { registerCart } = useFlyToCart();
+  const { wishlist, openWishlist, openSearch } = useShopUi();
   const cartRef = useRef<HTMLAnchorElement>(null);
   const shopRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
 
   useEffect(() => {
     registerCart(cartRef.current);
     return () => registerCart(null);
   }, [registerCart]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Close the range menu on an outside click or Escape, so it never strands
   // itself open over the shop.
@@ -46,14 +41,10 @@ export function SiteHeader() {
   }, [shopOpen]);
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-ink/8 bg-background/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
-      }`}
-    >
-      <nav className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 2xl:max-w-7xl">
+    <>
+    <AnnouncementBar />
+    <header className="glass depth-1 sticky top-0 z-50">
+      <nav className="mx-auto flex h-[68px] w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
           className="flex min-h-11 items-center"
@@ -69,7 +60,7 @@ export function SiteHeader() {
                script: centring the image's box leaves the word itself sitting
                low against Shop, About and the cart, which reads as the header
                being out of line even though the boxes agree. */
-            className="h-7 w-auto -translate-y-[3px] sm:h-9 sm:-translate-y-[4px]"
+            className="h-8 w-auto -translate-y-[3px] sm:h-10 sm:-translate-y-[4px]"
           />
         </Link>
 
@@ -82,7 +73,7 @@ export function SiteHeader() {
               onClick={() => setShopOpen((v) => !v)}
               aria-expanded={shopOpen}
               aria-haspopup="true"
-              className="flex min-h-11 items-center gap-1 rounded-[2px] px-2.5 text-[0.82rem] text-ink transition-colors hover:text-primary"
+              className="nav-link flex min-h-11 items-center gap-1 px-2.5 text-sm font-medium text-ink transition-colors"
             >
               Shop
               <svg
@@ -132,15 +123,43 @@ export function SiteHeader() {
 
           <Link
             href="/about"
-            className="flex min-h-11 items-center rounded-[2px] px-2.5 text-[0.82rem] text-ink transition-colors hover:text-primary"
+            className="nav-link flex min-h-11 items-center px-2.5 text-sm font-medium text-ink transition-colors"
           >
             About
           </Link>
 
+          <button
+            type="button"
+            onClick={openSearch}
+            aria-label="Search pieces"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors hover:text-primary"
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={openWishlist}
+            aria-label={`Wishlist, ${wishlist.length} saved`}
+            className="relative flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors hover:text-primary"
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden>
+              <path d="M12 20s-7-4.4-8.6-8.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8.6 4.4C19 15.6 12 20 12 20Z" />
+            </svg>
+            {wishlist.length > 0 && (
+              <span className="absolute right-0.5 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[0.62rem] font-medium text-ink">
+                {wishlist.length}
+              </span>
+            )}
+          </button>
+
           <Link
             ref={cartRef}
             href="/cart"
-            className="ml-1 flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-[0.82rem] font-medium text-background transition-colors hover:bg-primary-dark"
+            className="btn btn-primary ml-1 min-h-11 gap-1.5 px-5 text-sm"
             style={{ willChange: "transform" }}
           >
             Cart
@@ -153,5 +172,6 @@ export function SiteHeader() {
         </div>
       </nav>
     </header>
+    </>
   );
 }
