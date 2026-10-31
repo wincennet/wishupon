@@ -9,5 +9,8 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const supabase = await createClient();
   const { error } = await supabase.from("products").select("id").limit(1);
-  return NextResponse.json({ ok: !error }, { status: error ? 503 : 200 });
+  return NextResponse.json(
+    error ? { ok: false, error: error.message } : { ok: true },
+    { status: error ? 503 : 200 }
+  );
 }
