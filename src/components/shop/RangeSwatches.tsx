@@ -76,10 +76,10 @@ export function RangeSwatches() {
           Start with your colour
         </h2>
         <p className="mt-2 text-[0.9rem] text-ink-soft">
-          Six ranges, each strung in its own colours.
+          Six ranges, each strung in its own colours. Pick one and take a look.
         </p>
 
-        <ul className="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-x-7 sm:gap-y-12 sm:overflow-visible sm:px-0 lg:grid-cols-6 [&::-webkit-scrollbar]:hidden">
+        <ul className="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-16 sm:overflow-visible sm:px-0 lg:grid-cols-3 lg:gap-x-10 [&::-webkit-scrollbar]:hidden">
           {CATEGORIES.map((c, i) => {
             const cover = COVER[c.id];
             const rest = ((i * 37) % 30) / 10 - 1.5;
@@ -87,7 +87,7 @@ export function RangeSwatches() {
             return (
               <motion.li
                 key={c.id}
-                className="w-40 shrink-0 snap-center sm:w-auto"
+                className="w-[74vw] max-w-80 shrink-0 snap-center sm:w-auto sm:max-w-none"
                 /* The drop moves the card; it never hides it, so a missed
                    scroll trigger can not leave the section blank. */
                 initial={reduce ? false : { y: -18, rotate: rest * 4 }}
@@ -110,20 +110,20 @@ export function RangeSwatches() {
                 >
                   <Link
                     href={`/shop/${c.id}`}
-                    className="group relative block rounded-[10px] bg-background pb-3 pt-6 shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-lifted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-neutral"
+                    className="group relative block rounded-[14px] bg-background pb-5 pt-8 shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-lifted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-neutral"
                   >
                     <span className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-[45%]">
-                      <PushPin size={20} />
+                      <PushPin size={28} />
                     </span>
 
-                    <span className="mx-2.5 block">
-                      <span className="relative block aspect-square overflow-hidden rounded-[6px] bg-neutral-soft">
+                    <span className="mx-3.5 block">
+                      <span className="relative block aspect-[4/5] overflow-hidden rounded-[8px] bg-neutral-soft">
                         {cover ? (
                           <Image
                             src={cover}
                             alt=""
                             fill
-                            sizes="(max-width: 640px) 160px, 170px"
+                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 45vw, 380px"
                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                           />
                         ) : (
@@ -132,21 +132,27 @@ export function RangeSwatches() {
                       </span>
                     </span>
 
-                    <span className="mt-2.5 flex items-center justify-between gap-2 px-3.5">
-                      <span className="font-serif text-[1.05rem] leading-tight text-ink">
+                    <span className="mt-4 block px-5">
+                      <span className="font-serif text-[1.7rem] leading-tight text-ink sm:text-[1.9rem]">
                         {c.label}
                       </span>
-                      <span
-                        aria-hidden
-                        className="text-primary opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100"
-                      >
-                        &rarr;
+                      <span className="mt-1.5 line-clamp-2 block text-[0.88rem] leading-relaxed text-ink-soft">
+                        {c.blurb}
+                      </span>
+                      <span className="mt-3 flex items-center gap-1.5 text-[0.88rem] font-medium text-primary">
+                        {c.madeToOrder ? "Order yours" : "Explore"}
+                        <span
+                          aria-hidden
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        >
+                          &rarr;
+                        </span>
                       </span>
                     </span>
 
                     <span
                       aria-hidden
-                      className="absolute inset-x-3 bottom-0 h-[2px] origin-left scale-x-0 rounded-full transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      className="absolute inset-x-4 bottom-0 h-[3px] origin-left scale-x-0 rounded-full transition-transform duration-500 ease-out group-hover:scale-x-100"
                       style={{ background: c.accent }}
                     />
                   </Link>
