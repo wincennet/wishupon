@@ -41,7 +41,7 @@ export function SiteHeader() {
 
   return (
     <>
-    <header className="sticky top-0 z-50 border-b border-ink/10 bg-background/90 backdrop-blur-md">
+    <header className="glass depth-1 sticky top-0 z-50">
       <nav className="mx-auto flex h-[68px] w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
@@ -157,7 +157,7 @@ export function SiteHeader() {
           <Link
             ref={cartRef}
             href="/cart"
-            className="btn btn-primary ml-2 min-h-11 gap-1.5 px-5 text-sm"
+            className="btn btn-primary ml-1 min-h-11 gap-1.5 px-5 text-sm"
             style={{ willChange: "transform" }}
           >
             Cart

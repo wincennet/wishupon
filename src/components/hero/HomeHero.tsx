@@ -1,88 +1,106 @@
-import Image from "next/image";
 import Link from "next/link";
-import { whatsappLink } from "@/lib/constants";
+import { ArchCarousel } from "./ArchCarousel";
+import { DELIVERY, whatsappLink } from "@/lib/constants";
 
-/** One headline, one photograph, one decision. Everything else is quiet. */
+/** The home hero: a centred headline over an arched, draggable row of pieces.
+ *  The hand-drawn note points the eye from the words down into the cards;
+ *  its stroke draws itself in. */
 export function HomeHero() {
   return (
-    <section className="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 md:pb-28 md:pt-20 lg:grid-cols-12 lg:gap-16">
-      <div className="lg:col-span-6">
+    <section className="relative overflow-hidden border-b border-neutral pt-10 sm:pt-14">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        {/* The one quiet line the old ticker became: plain text, not a banner. */}
         <p
-          className="rise text-[0.7rem] font-medium uppercase tracking-[0.22em] text-ink-soft"
-          style={{ ["--d" as string]: "0s" }}
+          className="rise text-[0.8rem] tracking-wide text-ink-soft"
+          style={{ ["--d" as string]: "0.05s" }}
         >
-          Handmade accessories · Pakistan
+          {DELIVERY.fee === null
+            ? "Cash on delivery across Pakistan"
+            : `Cash on delivery · Flat Rs. ${DELIVERY.fee} delivery`}
+          <span aria-hidden className="mx-2">·</span>
+          Made by hand, made once
         </p>
 
         <h1
-          className="rise mt-6 font-serif text-[clamp(3rem,6.4vw,5.6rem)] leading-[1.02] tracking-[-0.025em] text-ink"
-          style={{ ["--d" as string]: "0.1s" }}
+          className="mt-5 max-w-4xl font-serif leading-[0.96] tracking-[-0.02em] text-ink"
+          style={{ fontSize: "clamp(2.8rem, 8.4vw, 6.4rem)" }}
         >
-          No two pieces
-          <span className="block italic text-primary">are ever the same.</span>
+          <span className="rise block" style={{ ["--d" as string]: "0.15s" }}>
+            No two pieces
+          </span>
+          <span
+            className="rise block italic text-primary"
+            style={{ ["--d" as string]: "0.3s" }}
+          >
+            are ever the same
+          </span>
         </h1>
 
         <p
-          className="rise mt-7 max-w-md text-[1.02rem] leading-[1.7] text-ink-soft"
-          style={{ ["--d" as string]: "0.2s" }}
+          className="rise mt-6 max-w-lg text-[0.98rem] leading-relaxed text-ink-soft sm:text-[1.05rem]"
+          style={{ ["--d" as string]: "0.45s" }}
         >
-          Strung by hand, one bead at a time. Choose a colour you love, or tell
-          us yours and we&rsquo;ll make it just for you.
+          Strung by hand in Pakistan, one bead at a time. Pick a colour you
+          love, or tell us yours and we&rsquo;ll make it just for you.
         </p>
-
-        <div
-          className="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-4"
-          style={{ ["--d" as string]: "0.3s" }}
-        >
-          <Link href="#wall" className="btn btn-primary min-h-12 px-8 text-[0.92rem]">
-            See what&rsquo;s ready
-          </Link>
-          <a
-            href={whatsappLink("Assalam o alaikum! I'd like a custom piece from WishUpon.")}
-            target="_blank"
-            rel="noreferrer"
-            className="link-underline flex min-h-11 items-center text-[0.92rem] font-medium text-ink"
-          >
-            Order in your colours
-          </a>
-        </div>
-
-        <dl
-          className="rise mt-14 grid max-w-md grid-cols-3 border-t border-ink/10 pt-6"
-          style={{ ["--d" as string]: "0.4s" }}
-        >
-          {[
-            ["Made to order", "Your colours, your size"],
-            ["One of a kind", "Each piece made once"],
-            ["Pay on delivery", "Anywhere in Pakistan"],
-          ].map(([title, note], i) => (
-            <div key={title} className={i > 0 ? "border-l border-ink/10 pl-4" : ""}>
-              <dt className="text-[0.78rem] font-medium text-ink">{title}</dt>
-              <dd className="mt-1 text-[0.72rem] leading-snug text-ink-soft">{note}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
 
-      <figure className="rise lg:col-span-6" style={{ ["--d" as string]: "0.2s" }}>
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-xl overflow-hidden rounded-xl bg-neutral-soft lg:max-w-none">
-          <Image
-            src="/hero/model-lilac-pearl.png"
-            alt="A model resting her cheek on her hand, wearing a lilac crystal-bead bracelet with gold tassels"
-            fill
-            priority
-            sizes="(max-width: 1024px) 92vw, 46vw"
-            className="object-cover"
-            style={{ objectPosition: "50% 35%" }}
-          />
+      {/* Hand-drawn note: points from the words down into the cards. */}
+      <div className="pointer-events-none relative mx-auto hidden max-w-[1440px] md:block">
+        <div
+          className="rise absolute right-[9%] top-2 z-10 -rotate-[8deg] text-center font-serif text-[1.7rem] italic leading-[1.05] text-primary lg:text-[2.1rem]"
+          style={{ ["--d" as string]: "1s" }}
+        >
+          one of
+          <br />a kind
         </div>
-        <figcaption className="mx-auto mt-4 flex max-w-xl items-baseline justify-between gap-4 text-[0.78rem] text-ink-soft lg:max-w-none">
-          <span className="font-serif text-[1rem] italic text-ink">
-            Lilac pearl bracelet
-          </span>
-          <span>Model image is AI-generated</span>
-        </figcaption>
-      </figure>
+        <svg
+          aria-hidden
+          className="draw absolute right-[7%] top-[4.6rem] z-10 h-40 w-24 text-primary lg:h-48"
+          viewBox="0 0 96 190"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        >
+          <path d="M62 6C92 40 88 92 52 130c-8 8-14 16-16 40" />
+          <path d="M22 150l14 24 22-14" />
+        </svg>
+      </div>
+
+      <div className="rise mt-6 sm:mt-10" style={{ ["--d" as string]: "0.6s" }}>
+        <ArchCarousel />
+      </div>
+
+      <div className="relative mx-auto flex max-w-6xl flex-col items-start px-5 pb-14 pt-4 sm:px-6 sm:pb-20">
+        <span
+          className="rise rounded-full border-[1.5px] border-dashed border-primary/60 p-2"
+          style={{ ["--d" as string]: "0.9s" }}
+        >
+          <Link
+            href="#wall"
+            className="btn btn-primary min-h-12 px-9 text-[0.95rem]"
+          >
+            See the wall
+          </Link>
+        </span>
+
+        <a
+          href={whatsappLink("Assalam o alaikum! I'd like a custom piece from WishUpon.")}
+          target="_blank"
+          rel="noreferrer"
+          className="link-underline mt-5 flex min-h-11 items-center text-[0.88rem] font-medium text-ink"
+        >
+          Or order it in your colours
+        </a>
+
+        <p
+          className="rise mt-3 font-serif text-[1.3rem] italic text-primary"
+          style={{ ["--d" as string]: "1.1s" }}
+        >
+          pay on delivery
+        </p>
+      </div>
     </section>
   );
 }
