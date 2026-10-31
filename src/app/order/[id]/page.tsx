@@ -17,14 +17,14 @@ export default async function OrderPlacedPage({
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 bg-neutral">
+      <main className="flex-1 bg-neutral-soft">
         <div className="mx-auto w-full max-w-lg px-4 py-14 sm:px-6 sm:py-20">
-          <div className="rounded-[2px] bg-background p-7 text-center shadow-[var(--shadow-card-lifted)] sm:p-9">
+          <div className="rounded-xl bg-background p-7 text-center border border-ink/10 sm:p-9">
             <p className="text-[0.7rem] uppercase tracking-[0.2em] text-primary/75">
               Order placed
             </p>
 
-            <h1 className="mt-3 font-display text-2xl leading-tight tracking-tight text-ink sm:text-3xl">
+            <h1 className="mt-3 font-serif text-2xl leading-tight tracking-tight text-ink sm:text-3xl">
               Thank you — we have your order.
             </h1>
 
@@ -33,11 +33,11 @@ export default async function OrderPlacedPage({
               and the delivery charges, then post it to you.
             </p>
 
-            <div className="mt-6 rounded-[2px] border border-neutral bg-neutral-soft/60 px-4 py-3">
+            <div className="mt-6 rounded-xl border border-ink/10 bg-neutral-soft/60 px-4 py-3">
               <p className="text-[0.72rem] uppercase tracking-[0.14em] text-ink-soft">
                 Your reference
               </p>
-              <p className="mt-1 font-display text-xl tabular-nums tracking-wide text-primary">
+              <p className="mt-1 font-serif text-xl tabular-nums tracking-wide text-primary">
                 {reference}
               </p>
             </div>
@@ -54,13 +54,13 @@ export default async function OrderPlacedPage({
                 )}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-6 text-[0.88rem] font-medium text-background transition-colors hover:bg-primary-dark"
               >
                 Message us
               </a>
               <Link
                 href="/shop/bangles"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary/35 px-6 text-[0.88rem] text-primary transition-colors hover:bg-primary hover:text-background"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-primary/35 px-6 text-[0.88rem] text-primary transition-colors hover:bg-primary hover:text-background"
               >
                 Keep looking
               </Link>

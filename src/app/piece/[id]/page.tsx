@@ -64,7 +64,7 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 bg-neutral">
+      <main className="flex-1 bg-neutral-soft">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 2xl:max-w-7xl">
           <Link
             href={`/shop/${piece.category}`}
@@ -74,7 +74,7 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
           </Link>
 
           {/* The detail page is one card pulled off the wall and laid flat. */}
-          <article className="mt-5 overflow-hidden rounded-[2px] bg-background shadow-[var(--shadow-card-lifted)]">
+          <article className="mt-5 overflow-hidden rounded-xl bg-background border border-ink/10">
             <div className="grid gap-0 lg:grid-cols-2">
               <div className="bg-neutral-soft">
                 <div className="relative aspect-square">
@@ -113,11 +113,11 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
                   {CATEGORY_LABELS[piece.category]}
                 </p>
 
-                <h1 className="mt-2 font-display text-2xl leading-tight tracking-tight text-ink sm:text-3xl">
+                <h1 className="mt-2 font-serif text-2xl leading-tight tracking-tight text-ink sm:text-3xl">
                   {piece.name}
                 </h1>
 
-                <p className="mt-4 flex items-baseline gap-3 font-display text-2xl tabular-nums text-primary">
+                <p className="mt-4 flex items-baseline gap-3 font-serif text-2xl tabular-nums text-primary">
                   {formatPrice(piece.price)}
                   {EXTENDED_SCHEMA &&
                     piece.old_price &&
@@ -138,7 +138,7 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
                   <AddToCart product={piece} />
                 </div>
 
-                <dl className="mt-8 space-y-3 border-t border-neutral pt-6 text-[0.83rem]">
+                <dl className="mt-8 space-y-3 border-t border-ink/10 pt-6 text-[0.83rem]">
                   <div>
                     <dt className="font-medium text-ink">Delivery</dt>
                     <dd className="mt-0.5 leading-relaxed text-ink-soft">

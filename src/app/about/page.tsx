@@ -12,13 +12,13 @@ export default function AboutPage() {
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 bg-neutral">
+      <main className="flex-1 bg-neutral-soft">
         <div className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="rounded-[2px] bg-background p-7 shadow-[var(--shadow-card)] sm:p-10">
+          <div className="rounded-xl bg-background p-7 border border-ink/10 sm:p-10">
             <p className="text-[0.7rem] uppercase tracking-[0.2em] text-primary/75">
               About
             </p>
-            <h1 className="mt-2 font-display text-3xl leading-tight tracking-tight text-ink">
+            <h1 className="mt-2 font-serif text-3xl leading-tight tracking-tight text-ink">
               Made one at a time.
             </h1>
 
@@ -36,7 +36,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <h2 className="mt-10 font-display text-xl text-ink">
+            <h2 className="mt-10 font-serif text-xl text-ink">
               Ordering something custom
             </h2>
             <p className="mt-2.5 text-[0.9rem] leading-relaxed text-ink-soft">
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 "When you need it by.",
               ].map((step, i) => (
                 <li key={step} className="flex gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[0.72rem] font-medium tabular-nums text-primary">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[0.72rem] font-medium tabular-nums text-primary">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{step}</span>
@@ -64,12 +64,12 @@ export default function AboutPage() {
               )}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-11 items-center justify-center mt-7 rounded-full bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
+              className="inline-flex min-h-11 items-center justify-center mt-7 rounded-lg bg-primary px-6 text-[0.9rem] font-medium text-background transition-colors hover:bg-primary-dark"
             >
               WhatsApp {WHATSAPP_DISPLAY}
             </a>
 
-            <h2 className="mt-10 font-display text-xl text-ink">
+            <h2 className="mt-10 font-serif text-xl text-ink">
               Delivery &amp; payment
             </h2>
             <div className="mt-2.5 space-y-3 text-[0.9rem] leading-relaxed text-ink-soft">

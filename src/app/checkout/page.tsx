@@ -65,12 +65,12 @@ export default function CheckoutPage() {
     return (
       <>
         <SiteHeader />
-        <main className="flex-1 bg-neutral">
+        <main className="flex-1 bg-neutral-soft">
           <div className="mx-auto w-full max-w-md px-4 py-16 text-center sm:px-6">
-            <p className="font-display text-xl text-ink">Your cart is empty.</p>
+            <p className="font-serif text-xl text-ink">Your cart is empty.</p>
             <Link
               href="/shop/bangles"
-              className="inline-flex min-h-11 items-center justify-center mt-6 rounded-full bg-primary px-6 text-[0.88rem] font-medium text-background"
+              className="inline-flex min-h-11 items-center justify-center mt-6 rounded-lg bg-primary px-6 text-[0.88rem] font-medium text-background"
             >
               See the wall
             </Link>
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 bg-neutral">
+      <main className="flex-1 bg-neutral-soft">
         <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
           {/* Explicit step-state: a first-time cash-on-delivery buyer should
               never wonder what happens after she presses the button. */}
@@ -96,13 +96,13 @@ export default function CheckoutPage() {
             <li>3. Posted to you</li>
           </ol>
 
-          <h1 className="mt-3 font-display text-3xl tracking-tight text-ink">
+          <h1 className="mt-3 font-serif text-3xl tracking-tight text-ink">
             Checkout
           </h1>
 
           <form
             onSubmit={handleSubmit}
-            className="mt-8 space-y-5 rounded-[2px] bg-background p-5 shadow-[var(--shadow-card)] sm:p-7"
+            className="mt-8 space-y-5 rounded-xl bg-background p-5 border border-ink/10 sm:p-7"
           >
             <Field
               label="Your name"
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
                 required
                 rows={3}
                 placeholder="House / street, area, city"
-                className="mt-1.5 w-full rounded-[2px] border border-neutral bg-neutral-soft/50 px-3.5 py-2.5 text-[0.9rem] text-ink placeholder:text-ink-soft/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-background px-3.5 py-2.5 text-[0.9rem] text-ink placeholder:text-ink-soft/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
@@ -157,7 +157,7 @@ export default function CheckoutPage() {
               </div>
 
               {method === "bank-transfer" && (
-                <div className="mt-3 rounded-[2px] border border-neutral bg-neutral-soft/60 p-4">
+                <div className="mt-3 rounded-xl border border-ink/10 bg-neutral-soft/60 p-4">
                   {BANK_DETAILS_PENDING ? (
                     <p className="text-[0.83rem] leading-relaxed text-ink-soft">
                       We will share the account details on the phone when we call
@@ -175,9 +175,9 @@ export default function CheckoutPage() {
               )}
             </fieldset>
 
-            <div className="border-t border-neutral pt-5">
+            <div className="border-t border-ink/10 pt-5">
               {delivery.amount !== null && (
-                <dl className="mb-3 space-y-1.5 border-b border-neutral pb-3 text-[0.88rem] text-ink-soft">
+                <dl className="mb-3 space-y-1.5 border-b border-ink/10 pb-3 text-[0.88rem] text-ink-soft">
                   <div className="flex justify-between">
                     <dt>Pieces</dt>
                     <dd className="tabular-nums">{formatPrice(total)}</dd>
@@ -191,8 +191,8 @@ export default function CheckoutPage() {
                 </dl>
               )}
               <div className="flex items-center justify-between">
-                <span className="font-display text-lg text-ink">Total</span>
-                <span className="font-display text-xl tabular-nums text-primary">
+                <span className="font-serif text-lg text-ink">Total</span>
+                <span className="font-serif text-xl tabular-nums text-primary">
                   {formatPrice(delivery.total)}
                 </span>
               </div>
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="inline-flex min-h-11 items-center justify-center w-full rounded-full bg-primary px-6 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
+              className="inline-flex min-h-11 items-center justify-center w-full rounded-lg bg-primary px-6 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:opacity-55"
             >
               {status === "sending" ? "Placing your order…" : "Place order"}
             </button>
@@ -250,7 +250,7 @@ function Field({
         type={type}
         required={required}
         {...rest}
-        className="mt-1.5 w-full rounded-[2px] border border-neutral bg-neutral-soft/50 px-3.5 py-2.5 text-[0.9rem] text-ink placeholder:text-ink-soft/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        className="mt-1.5 w-full rounded-lg border border-ink/15 bg-background px-3.5 py-2.5 text-[0.9rem] text-ink placeholder:text-ink-soft/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       />
       {hint && <p className="mt-1 text-[0.75rem] text-ink-soft">{hint}</p>}
     </div>
@@ -270,10 +270,10 @@ function PaymentOption({
 }) {
   return (
     <label
-      className={`flex cursor-pointer gap-3 rounded-[2px] border p-3.5 transition-colors ${
+      className={`flex cursor-pointer gap-3 rounded-xl border p-3.5 transition-colors ${
         checked
           ? "border-primary bg-accent-soft/50"
-          : "border-neutral hover:border-primary/40"
+          : "border-ink/10 hover:border-primary/40"
       }`}
     >
       <input
