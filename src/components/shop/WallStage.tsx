@@ -59,7 +59,7 @@ export function WallStage({ products }: { products: Product[] }) {
       : "lg:grid-cols-1 lg:gap-y-12";
 
   return (
-    <div className="board-ground relative">
+    <div className="board-ground board-continued relative">
       {/* ── The wall ─────────────────────────────────────────────────────── */}
       <section id="wall" className="relative z-10 scroll-mt-16">
         <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20 2xl:max-w-7xl">

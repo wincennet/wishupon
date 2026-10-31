@@ -17,7 +17,7 @@ export function ProductRow({
   if (pieces.length === 0) return null;
 
   return (
-    <section className="board-ground">
+    <section className="board-ground board-continued">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 2xl:max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
