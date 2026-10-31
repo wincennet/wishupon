@@ -7,7 +7,6 @@ import { useCart } from "@/components/cart/CartProvider";
 import { useFlyToCart } from "@/components/cart/FlyToCart";
 import { useShopUi } from "@/components/shop/ShopUi";
 import { CATEGORIES } from "@/lib/categories";
-import { AnnouncementBar } from "./AnnouncementBar";
 
 export function SiteHeader() {
   const { count, ready } = useCart();
@@ -42,7 +41,6 @@ export function SiteHeader() {
 
   return (
     <>
-    <AnnouncementBar />
     <header className="glass depth-1 sticky top-0 z-50">
       <nav className="mx-auto flex h-[68px] w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link

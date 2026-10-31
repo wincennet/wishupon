@@ -159,9 +159,6 @@ body {
 }
 .anim-float { animation: float3d 7s ease-in-out infinite; }
 
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.marquee-track { animation: marquee 26s linear infinite; }
-.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
 
 .btn {
   position: relative;

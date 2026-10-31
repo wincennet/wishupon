@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArchCarousel } from "./ArchCarousel";
-import { whatsappLink } from "@/lib/constants";
+import { DELIVERY, whatsappLink } from "@/lib/constants";
 
 /** The home hero: a centred headline over an arched, draggable row of pieces.
  *  The hand-drawn note points the eye from the words down into the cards;
@@ -8,16 +8,21 @@ import { whatsappLink } from "@/lib/constants";
 export function HomeHero() {
   return (
     <section className="relative overflow-hidden border-b border-neutral pt-10 sm:pt-14">
-      <div className="mx-auto max-w-4xl px-5 text-center">
-        <span
-          className="rise inline-flex items-center rounded-full bg-accent-soft px-4 py-2 text-[0.78rem] font-medium text-primary"
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        {/* The one quiet line the old ticker became: plain text, not a banner. */}
+        <p
+          className="rise text-[0.8rem] tracking-wide text-ink-soft"
           style={{ ["--d" as string]: "0.05s" }}
         >
-          Handmade accessories, made once
-        </span>
+          {DELIVERY.fee === null
+            ? "Cash on delivery across Pakistan"
+            : `Cash on delivery · Flat Rs. ${DELIVERY.fee} delivery`}
+          <span aria-hidden className="mx-2">·</span>
+          Made by hand, made once
+        </p>
 
         <h1
-          className="mt-6 font-serif leading-[0.96] tracking-[-0.02em] text-ink"
+          className="mt-5 max-w-4xl font-serif leading-[0.96] tracking-[-0.02em] text-ink"
           style={{ fontSize: "clamp(2.8rem, 8.4vw, 6.4rem)" }}
         >
           <span className="rise block" style={{ ["--d" as string]: "0.15s" }}>
@@ -32,7 +37,7 @@ export function HomeHero() {
         </h1>
 
         <p
-          className="rise mx-auto mt-6 max-w-lg text-[0.98rem] leading-relaxed text-ink-soft sm:text-[1.05rem]"
+          className="rise mt-6 max-w-lg text-[0.98rem] leading-relaxed text-ink-soft sm:text-[1.05rem]"
           style={{ ["--d" as string]: "0.45s" }}
         >
           Strung by hand in Pakistan, one bead at a time. Pick a colour you
@@ -67,7 +72,7 @@ export function HomeHero() {
         <ArchCarousel />
       </div>
 
-      <div className="relative mx-auto -mt-2 flex max-w-xl flex-col items-center px-5 pb-14 text-center sm:pb-20">
+      <div className="relative mx-auto flex max-w-6xl flex-col items-start px-5 pb-14 pt-4 sm:px-6 sm:pb-20">
         <span
           className="rise rounded-full border-[1.5px] border-dashed border-primary/60 p-2"
           style={{ ["--d" as string]: "0.9s" }}
