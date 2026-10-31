@@ -84,8 +84,29 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/15 py-5 text-center text-xs text-white/60">
-        © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+      <div className="border-t border-white/15 px-4 py-4 text-xs text-white/60">
+        <nav
+          aria-label="Policies"
+          className="mx-auto mb-1 flex max-w-7xl flex-wrap justify-center gap-x-1"
+        >
+          {[
+            ["/shipping-returns", "Delivery & returns"],
+            ["/privacy", "Privacy"],
+            ["/terms", "Terms"],
+            ["/contact", "Contact"],
+          ].map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex min-h-11 items-center px-3 transition hover:text-white"
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <p className="text-center">
+          © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+        </p>
       </div>
     </footer>
   );

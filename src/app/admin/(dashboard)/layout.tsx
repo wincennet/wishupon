@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signOut } from "@/app/admin/actions";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
@@ -21,6 +22,14 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
               >
                 Orders
               </Link>
+              {EXTENDED_SCHEMA && (
+                <Link
+                  href="/admin/feedback"
+                  className="flex min-h-11 items-center rounded-full px-3 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"
+                >
+                  Feedback
+                </Link>
+              )}
               <Link
                 href="/admin/account"
                 className="flex min-h-11 items-center rounded-full px-3 text-[0.85rem] text-ink hover:bg-accent-soft hover:text-primary"

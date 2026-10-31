@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { FlyToCartProvider } from "@/components/cart/FlyToCart";
 import { ShopUiProvider } from "@/components/shop/ShopUi";
+import { SITE_URL } from "@/lib/site";
 
 /* WishUpon's own faces: a grotesque with character for the interface, and a
    serif with a real hand for headlines and piece names. */
@@ -28,6 +29,13 @@ const serif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    siteName: "WishUpon",
+    type: "website",
+    locale: "en_PK",
+    images: ["/logo/wishupon-logo.jpg"],
+  },
   title: "WishUpon — Handmade beaded & steel accessories",
   description:
     "Handmade beaded bracelets, earrings, necklaces and steel pieces. Custom made-to-order, one of a kind, at everyday prices. Cash on delivery across Pakistan.",

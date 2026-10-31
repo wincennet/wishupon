@@ -7,14 +7,24 @@ import { useFlyToCart } from "@/components/cart/FlyToCart";
 import type { Product } from "@/lib/types";
 import { whatsappLink } from "@/lib/constants";
 import { categoryOf } from "@/lib/categories";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 
 export function AddToCart({ product }: { product: Product }) {
   const { add, items } = useCart();
   const { fly } = useFlyToCart();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [added, setAdded] = useState(false);
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
 
-  const inCart = items.find((i) => i.product_id === product.id)?.quantity ?? 0;
+  const sizes = EXTENDED_SCHEMA ? (product.sizes ?? []) : [];
+  const colors = EXTENDED_SCHEMA ? (product.colors ?? []) : [];
+  const needsSize = sizes.length > 0 && !size;
+  const needsColor = colors.length > 0 && !color;
+
+  const inCart = items
+    .filter((i) => i.product_id === product.id)
+    .reduce((n, i) => n + i.quantity, 0);
   const soldOut = product.stock_qty <= 0;
   const maxed = inCart >= product.stock_qty;
 
@@ -41,15 +51,30 @@ export function AddToCart({ product }: { product: Product }) {
     );
   }
 
+  const prompt =
+    needsSize && needsColor
+      ? "Choose a size and colour"
+      : needsSize
+        ? "Choose a size"
+        : needsColor
+          ? "Choose a colour"
+          : "";
+
   return (
     <div>
+      <Pills label="Size" values={sizes} value={size} onPick={setSize} />
+      <Pills label="Colour" values={colors} value={color} onPick={setColor} />
+
       <div className="flex flex-wrap items-center gap-3">
         <button
           ref={buttonRef}
           type="button"
-          disabled={maxed}
+          disabled={maxed || Boolean(prompt)}
           onClick={() => {
-            add(product);
+            add(product, {
+              size: size || undefined,
+              color: color || undefined,
+            });
             setAdded(true);
             // The beads that fly are this piece's own colours, so the burst
             // reads as the object moving rather than generic confetti.
@@ -59,7 +84,9 @@ export function AddToCart({ product }: { product: Product }) {
           }}
           className="inline-flex min-h-12 items-center rounded-full bg-primary px-7 text-[0.92rem] font-medium text-background transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-45"
         >
-          {maxed ? "All of them are in your cart" : "Add to cart"}
+          {maxed
+            ? "All of them are in your cart"
+            : prompt || "Add to cart"}
         </button>
 
         {added && (
@@ -79,5 +106,41 @@ export function AddToCart({ product }: { product: Product }) {
         {inCart > 0 && ` ${inCart} in your cart.`}
       </p>
     </div>
+  );
+}
+
+function Pills({
+  label,
+  values,
+  value,
+  onPick,
+}: {
+  label: string;
+  values: string[];
+  value: string;
+  onPick: (v: string) => void;
+}) {
+  if (values.length === 0) return null;
+  return (
+    <fieldset className="mb-4">
+      <legend className="text-[0.8rem] font-medium text-ink">{label}</legend>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {values.map((v) => (
+          <button
+            key={v}
+            type="button"
+            aria-pressed={value === v}
+            onClick={() => onPick(v)}
+            className={`min-h-11 rounded-full border px-4 text-[0.82rem] transition-colors ${
+              value === v
+                ? "border-primary bg-primary text-background"
+                : "border-neutral bg-background text-ink hover:border-primary/50"
+            }`}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/components/cart/CartProvider";
+import { useCart, lineKey } from "@/components/cart/CartProvider";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { formatPrice } from "@/lib/format";
@@ -40,7 +40,7 @@ export default function CartPage() {
               <ul className="mt-8 space-y-3">
                 {items.map((item) => (
                   <li
-                    key={item.product_id}
+                    key={lineKey(item)}
                     className="flex gap-4 rounded-[2px] bg-background p-3 shadow-[var(--shadow-card)]"
                   >
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden bg-neutral-soft">
@@ -60,6 +60,11 @@ export default function CartPage() {
                           className="font-display text-[0.95rem] leading-tight text-ink hover:text-primary"
                         >
                           {item.name}
+                          {(item.size || item.color) && (
+                            <span className="mt-0.5 block font-body text-[0.76rem] text-ink-soft">
+                              {[item.size, item.color].filter(Boolean).join(" · ")}
+                            </span>
+                          )}
                         </Link>
                         <p className="shrink-0 font-display text-[0.95rem] tabular-nums text-primary">
                           {formatPrice(item.price * item.quantity)}
@@ -72,7 +77,7 @@ export default function CartPage() {
                             type="button"
                             aria-label={`Reduce quantity of ${item.name}`}
                             onClick={() =>
-                              setQuantity(item.product_id, item.quantity - 1)
+                              setQuantity(lineKey(item), item.quantity - 1)
                             }
                             className="px-3 py-1 text-ink-soft transition-colors hover:text-primary"
                           >
@@ -85,7 +90,7 @@ export default function CartPage() {
                             type="button"
                             aria-label={`Increase quantity of ${item.name}`}
                             onClick={() =>
-                              setQuantity(item.product_id, item.quantity + 1)
+                              setQuantity(lineKey(item), item.quantity + 1)
                             }
                             className="px-3 py-1 text-ink-soft transition-colors hover:text-primary"
                           >
@@ -95,7 +100,7 @@ export default function CartPage() {
 
                         <button
                           type="button"
-                          onClick={() => remove(item.product_id)}
+                          onClick={() => remove(lineKey(item))}
                           className="text-[0.78rem] text-ink-soft underline underline-offset-2 hover:text-primary"
                         >
                           Remove

@@ -10,11 +10,19 @@ import {
 } from "react";
 import type { OrderItem, Product } from "@/lib/types";
 
+/** A cart line is a piece plus the size and colour chosen for it, so the same
+ *  bracelet in two colours is two lines. */
+export function lineKey(i: Pick<OrderItem, "product_id" | "size" | "color">) {
+  return `${i.product_id}|${i.size ?? ""}|${i.color ?? ""}`;
+}
+
+export type LineOptions = { size?: string; color?: string };
+
 type CartContext = {
   items: OrderItem[];
-  add: (product: Product) => void;
-  remove: (productId: string) => void;
-  setQuantity: (productId: string, quantity: number) => void;
+  add: (product: Product, options?: LineOptions) => void;
+  remove: (key: string) => void;
+  setQuantity: (key: string, quantity: number) => void;
   clear: () => void;
   total: number;
   count: number;
@@ -55,20 +63,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
       total,
       count,
       ready,
-      add: (product) =>
+      add: (product, options = {}) =>
         setItems((current) => {
-          const existing = current.find((i) => i.product_id === product.id);
+          const line = {
+            product_id: product.id,
+            size: options.size,
+            color: options.color,
+          };
+          const key = lineKey(line);
+          const existing = current.find((i) => lineKey(i) === key);
+          // Never let the cart promise more of a piece than she has made,
+          // counting every colour and size of it together.
+          const inCart = current
+            .filter((i) => i.product_id === product.id)
+            .reduce((n, i) => n + i.quantity, 0);
+          if (inCart >= product.stock_qty) return current;
+
           if (existing) {
-            // Never let the cart promise more than she has made.
-            const capped = Math.min(existing.quantity + 1, product.stock_qty);
             return current.map((i) =>
-              i.product_id === product.id ? { ...i, quantity: capped } : i
+              lineKey(i) === key ? { ...i, quantity: i.quantity + 1 } : i
             );
           }
           return [
             ...current,
             {
-              product_id: product.id,
+              ...line,
               name: product.name,
               price: product.price,
               quantity: 1,
@@ -76,14 +95,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
             },
           ];
         }),
-      remove: (productId) =>
-        setItems((current) => current.filter((i) => i.product_id !== productId)),
-      setQuantity: (productId, quantity) =>
+      remove: (key) =>
+        setItems((current) => current.filter((i) => lineKey(i) !== key)),
+      setQuantity: (key, quantity) =>
         setItems((current) =>
           quantity <= 0
-            ? current.filter((i) => i.product_id !== productId)
+            ? current.filter((i) => lineKey(i) !== key)
             : current.map((i) =>
-                i.product_id === productId ? { ...i, quantity } : i
+                lineKey(i) === key ? { ...i, quantity } : i
               )
         ),
       clear: () => setItems([]),

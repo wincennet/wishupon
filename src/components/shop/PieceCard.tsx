@@ -15,6 +15,7 @@ import { formatPrice } from "@/lib/format";
 import { categoryOf, colourOf, pieceMark } from "@/lib/categories";
 import { PushPin } from "./PushPin";
 import { useShopUi } from "./ShopUi";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 
 /** One piece, one card, pinned to the board.
  *
@@ -35,13 +36,22 @@ export function PieceCard({
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const [hovering, setHovering] = useState(false);
-  const { inWishlist, toggleWishlist } = useShopUi();
+  const { inWishlist, toggleWishlist, openQuickView } = useShopUi();
   const saved = inWishlist(product.id);
 
   const soldOut = product.stock_qty <= 0;
   const category = categoryOf(product.category);
   const colour = colourOf(product.name);
   const mark = pieceMark(product.id);
+  const onSale =
+    EXTENDED_SCHEMA && !!product.old_price && product.old_price > product.price;
+  const tag = !EXTENDED_SCHEMA
+    ? null
+    : product.is_new
+      ? "New"
+      : product.is_bestseller
+        ? "Bestseller"
+        : null;
 
   // Deterministic per-card jitter: the same piece always hangs at the same
   // angle, so the wall does not reshuffle itself on every render.
@@ -119,6 +129,20 @@ export function PieceCard({
         </span>
       </button>
 
+      <button
+        type="button"
+        onClick={() => openQuickView(product)}
+        aria-label={`Quick view of ${product.name}`}
+        className="absolute right-1 top-[4.2rem] z-30 flex h-11 w-11 items-center justify-center text-primary"
+      >
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/90 shadow-[0_1px_3px_rgba(42,27,61,0.25)]">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </span>
+      </button>
+
       <Link
         href={`/piece/${product.id}`}
         className="block rounded-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-neutral"
@@ -157,6 +181,12 @@ export function PieceCard({
                 }}
               />
 
+              {tag && !soldOut && (
+                <span className="absolute left-1.5 top-1.5 rounded-full bg-background/90 px-2.5 py-0.5 text-[0.62rem] font-medium uppercase tracking-[0.14em] text-primary">
+                  {tag}
+                </span>
+              )}
+
               {soldOut && (
                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-8deg] border-2 border-primary/70 bg-background/70 px-3 py-1 font-display text-[0.7rem] uppercase tracking-[0.18em] text-primary backdrop-blur-[1px]">
                   Sold
@@ -182,6 +212,11 @@ export function PieceCard({
                 }}
               >
                 {formatPrice(product.price)}
+                {onSale && (
+                  <span className="ml-1.5 text-[0.72rem] text-ink-soft line-through">
+                    {formatPrice(product.old_price as number)}
+                  </span>
+                )}
               </span>
 
               {/* Stamped ink: a real per-piece mark from the row id, so it does

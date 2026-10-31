@@ -16,6 +16,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { AddToCart } from "@/components/shop/AddToCart";
 import { CATEGORIES, categoryOf } from "@/lib/categories";
 import { formatPrice } from "@/lib/format";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 import type { Product } from "@/lib/types";
 
 /** Everything that opens over the page: the wishlist drawer, the search panel
@@ -197,7 +198,9 @@ function WishlistDrawer({
     };
   }, [open, ids]);
 
-  const buyable = products.filter((p) => p.stock_qty > 0);
+  const hasOptions = (p: Product) =>
+    EXTENDED_SCHEMA && Boolean(p.sizes?.length || p.colors?.length);
+  const buyable = products.filter((p) => p.stock_qty > 0 && !hasOptions(p));
 
   return (
     <div className={`fixed inset-0 z-[100] ${open ? "" : "pointer-events-none"}`}>
@@ -264,10 +267,14 @@ function WishlistDrawer({
                     <button
                       type="button"
                       disabled={p.stock_qty <= 0}
-                      onClick={() => add(p)}
+                      onClick={() => (hasOptions(p) ? onView(p) : add(p))}
                       className="btn btn-primary px-3 py-1.5 text-xs"
                     >
-                      {p.stock_qty > 0 ? "Add to cart" : "Sold out"}
+                      {p.stock_qty <= 0
+                        ? "Sold out"
+                        : hasOptions(p)
+                          ? "Choose options"
+                          : "Add to cart"}
                     </button>
                     <button
                       type="button"
@@ -507,8 +514,13 @@ function QuickView({
           <h2 className="mt-1 font-display text-2xl font-semibold leading-tight text-ink">
             {product.name}
           </h2>
-          <p className="mt-3 font-display text-2xl font-semibold text-primary">
+          <p className="mt-3 flex items-baseline gap-3 font-display text-2xl font-semibold text-primary">
             {formatPrice(product.price)}
+            {EXTENDED_SCHEMA && product.old_price && product.old_price > product.price && (
+              <span className="text-base font-normal text-ink-soft line-through">
+                {formatPrice(product.old_price)}
+              </span>
+            )}
           </p>
           {product.description && (
             <p className="mt-4 text-sm leading-relaxed text-ink-soft">

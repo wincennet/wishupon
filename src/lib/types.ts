@@ -20,6 +20,21 @@ export type Product = {
   image_urls: string[];
   is_active: boolean;
   created_at: string;
+  /* Present only after the 0002 migration (see lib/features.ts). */
+  sizes?: string[] | null;
+  colors?: string[] | null;
+  old_price?: number | null;
+  is_bestseller?: boolean;
+  is_new?: boolean;
+};
+
+export type Feedback = {
+  id: string;
+  name: string;
+  rating: number;
+  message: string;
+  approved: boolean;
+  created_at: string;
 };
 
 /** A line item is a snapshot: if a product is later renamed or repriced,
@@ -30,6 +45,8 @@ export type OrderItem = {
   price: number;
   quantity: number;
   image_url: string | null;
+  size?: string;
+  color?: string;
 };
 
 export type Order = {

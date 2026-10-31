@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { OrderStatus } from "@/lib/types";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 
 /** Every action re-checks the session. Row-level security would block an
  *  unauthenticated write anyway, but failing here gives a clear error rather
@@ -30,7 +31,28 @@ export async function saveProduct(formData: FormData) {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const record = {
+  const list = (key: string) =>
+    String(formData.get(key) ?? "")
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+
+  // Only written once the 0002 migration has added the columns; writing them
+  // earlier would make Supabase reject the whole save.
+  const extras = EXTENDED_SCHEMA
+    ? {
+        sizes: list("sizes"),
+        colors: list("colors"),
+        old_price: formData.get("old_price")
+          ? Number(formData.get("old_price"))
+          : null,
+        is_new: formData.get("is_new") === "on",
+        is_bestseller: formData.get("is_bestseller") === "on",
+      }
+    : {};
+
+  const record: Record<string, unknown> = {
+    ...extras,
     name: String(formData.get("name")).trim(),
     description: String(formData.get("description") ?? "").trim() || null,
     price: Number(formData.get("price")),
@@ -117,4 +139,22 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/admin/login");
+}
+
+/** Approve a piece of feedback so it appears on the shop. */
+export async function approveFeedback(formData: FormData) {
+  const supabase = await requireClient();
+  await supabase
+    .from("feedback")
+    .update({ approved: true })
+    .eq("id", String(formData.get("id")));
+  revalidatePath("/admin/feedback");
+  revalidatePath("/");
+}
+
+export async function deleteFeedback(formData: FormData) {
+  const supabase = await requireClient();
+  await supabase.from("feedback").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/admin/feedback");
+  revalidatePath("/");
 }

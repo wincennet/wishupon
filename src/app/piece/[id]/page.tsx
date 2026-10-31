@@ -6,11 +6,42 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AddToCart } from "@/components/shop/AddToCart";
 import { formatPrice } from "@/lib/format";
+import type { Metadata } from "next";
 import type { Product } from "@/lib/types";
+import { EXTENDED_SCHEMA } from "@/lib/features";
 import { CATEGORY_LABELS } from "@/lib/categories";
 import { DELIVERY, whatsappLink } from "@/lib/constants";
 
 export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/piece/[id]">): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("name, description, image_urls, price")
+    .eq("id", id)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (!data) return {};
+
+  const description =
+    data.description ??
+    `${data.name} — handmade by WishUpon. Rs. ${data.price}. Cash on delivery across Pakistan.`;
+  const image = data.image_urls?.[0];
+
+  return {
+    title: `${data.name} — WishUpon`,
+    description,
+    openGraph: {
+      title: data.name,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
+  };
+}
 
 export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
   const { id } = await params;
@@ -86,8 +117,15 @@ export default async function PiecePage({ params }: PageProps<"/piece/[id]">) {
                   {piece.name}
                 </h1>
 
-                <p className="mt-4 font-display text-2xl tabular-nums text-primary">
+                <p className="mt-4 flex items-baseline gap-3 font-display text-2xl tabular-nums text-primary">
                   {formatPrice(piece.price)}
+                  {EXTENDED_SCHEMA &&
+                    piece.old_price &&
+                    piece.old_price > piece.price && (
+                      <span className="text-base text-ink-soft line-through">
+                        {formatPrice(piece.old_price)}
+                      </span>
+                    )}
                 </p>
 
                 {piece.description && (

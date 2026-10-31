@@ -104,11 +104,11 @@ export default async function AdminOrdersPage({
               <ul className="mt-4 space-y-1.5 border-t border-neutral pt-3">
                 {order.items.map((item) => (
                   <li
-                    key={item.product_id}
+                    key={`${item.product_id}-${item.size ?? ''}-${item.color ?? ''}`}
                     className="flex justify-between gap-4 text-[0.87rem]"
                   >
                     <span className="text-ink">
-                      {item.quantity} × {item.name}
+                      {item.quantity} × {item.name}{(item.size || item.color) ? ` (${[item.size, item.color].filter(Boolean).join(', ')})` : ''}
                     </span>
                     <span className="shrink-0 tabular-nums text-ink-soft">
                       {formatPrice(item.price * item.quantity)}
