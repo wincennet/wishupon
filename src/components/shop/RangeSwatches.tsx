@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { CATEGORIES } from "@/lib/categories";
 import type { Category } from "@/lib/types";
-import { PushPin } from "./PushPin";
 
 /** One real photograph per range where the shop has one. A range without a
  *  photograph yet shows a spread of its own beads instead of a flat colour. */
@@ -82,81 +81,59 @@ export function RangeSwatches() {
         <ul className="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-16 sm:overflow-visible sm:px-0 lg:grid-cols-3 lg:gap-x-10 [&::-webkit-scrollbar]:hidden">
           {CATEGORIES.map((c, i) => {
             const cover = COVER[c.id];
-            const rest = ((i * 37) % 30) / 10 - 1.5;
-
             return (
               <motion.li
                 key={c.id}
                 className="w-[74vw] max-w-80 shrink-0 snap-center sm:w-auto sm:max-w-none"
-                /* The drop moves the card; it never hides it, so a missed
+                /* The rise moves the tile; it never hides it, so a missed
                    scroll trigger can not leave the section blank. */
-                initial={reduce ? false : { y: -18, rotate: rest * 4 }}
-                whileInView={{ y: 0, rotate: rest }}
-                viewport={{ once: true, amount: 0.3 }}
+                initial={reduce ? false : { y: 28 }}
+                whileInView={{ y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{
                   type: "spring",
-                  stiffness: 90,
-                  damping: 11,
-                  mass: 0.8,
-                  delay: reduce ? 0 : i * 0.07,
+                  stiffness: 70,
+                  damping: 16,
+                  delay: reduce ? 0 : (i % 3) * 0.08,
                 }}
-                style={{ transformOrigin: "50% 0%" }}
               >
-                <motion.div
-                  whileHover={reduce ? undefined : { y: -8, rotate: 0 }}
-                  whileTap={reduce ? undefined : { scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 18 }}
-                  style={{ transformOrigin: "50% 0%" }}
+                <Link
+                  href={`/shop/${c.id}`}
+                  className="group block rounded-[28px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background"
                 >
-                  <Link
-                    href={`/shop/${c.id}`}
-                    className="group relative block rounded-[14px] bg-background pb-5 pt-8 shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-lifted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-neutral"
-                  >
-                    <span className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-[45%]">
-                      <PushPin size={28} />
-                    </span>
+                  {/* An arched window onto the range. */}
+                  <span className="relative block aspect-[3/4] overflow-hidden rounded-t-[999px] rounded-b-[28px] bg-neutral-soft shadow-[0_28px_50px_-30px_rgba(42,27,61,0.55)] transition-all duration-500 group-hover:-translate-y-1.5 group-hover:shadow-[0_36px_60px_-30px_rgba(42,27,61,0.6)]">
+                    {cover ? (
+                      <Image
+                        src={cover}
+                        alt=""
+                        fill
+                        sizes="(max-width: 640px) 74vw, (max-width: 1024px) 45vw, 380px"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                      />
+                    ) : (
+                      <BeadSpread id={c.id} beads={c.beads} />
+                    )}
+                  </span>
 
-                    <span className="mx-3.5 block">
-                      <span className="relative block aspect-[4/5] overflow-hidden rounded-[8px] bg-neutral-soft">
-                        {cover ? (
-                          <Image
-                            src={cover}
-                            alt=""
-                            fill
-                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 45vw, 380px"
-                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-                          />
-                        ) : (
-                          <BeadSpread id={c.id} beads={c.beads} />
-                        )}
-                      </span>
+                  <span className="mt-5 block text-center">
+                    <span className="block font-serif text-[1.8rem] leading-tight text-ink sm:text-[2rem]">
+                      {c.label}
                     </span>
-
-                    <span className="mt-4 block px-5">
-                      <span className="font-serif text-[1.7rem] leading-tight text-ink sm:text-[1.9rem]">
-                        {c.label}
-                      </span>
-                      <span className="mt-1.5 line-clamp-2 block text-[0.88rem] leading-relaxed text-ink-soft">
-                        {c.blurb}
-                      </span>
-                      <span className="mt-3 flex items-center gap-1.5 text-[0.88rem] font-medium text-primary">
-                        {c.madeToOrder ? "Order yours" : "Explore"}
-                        <span
-                          aria-hidden
-                          className="transition-transform duration-300 group-hover:translate-x-1"
-                        >
-                          &rarr;
-                        </span>
+                    <span className="mx-auto mt-1.5 line-clamp-2 block max-w-[17rem] text-[0.88rem] leading-relaxed text-ink-soft">
+                      {c.blurb}
+                    </span>
+                    <span className="mt-3 inline-flex items-center gap-1.5 text-[0.88rem] font-medium text-primary">
+                      {c.madeToOrder ? "Order yours" : "Explore"}
+                      <span
+                        aria-hidden
+                        className="transition-transform duration-300 group-hover:translate-x-1"
+                      >
+                        &rarr;
                       </span>
                     </span>
-
-                    <span
-                      aria-hidden
-                      className="absolute inset-x-4 bottom-0 h-[3px] origin-left scale-x-0 rounded-full transition-transform duration-500 ease-out group-hover:scale-x-100"
-                      style={{ background: c.accent }}
-                    />
-                  </Link>
-                </motion.div>
+                  </span>
+                </Link>
               </motion.li>
             );
           })}

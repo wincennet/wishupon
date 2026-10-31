@@ -74,26 +74,9 @@ select {
   font-family: var(--font-serif);
 }
 
-/* The board the cards hang on: kraft beige with a woven tooth, plus a soft
-   vignette so the wall has a lit centre and falls off at the edges. */
+/* The calm warm ground the gallery sections sit on. */
 .board-ground {
-  background-color: var(--color-neutral);
-  background-image:
-    radial-gradient(
-      ellipse 120% 80% at 50% 0%,
-      rgba(255, 255, 255, 0.34),
-      transparent 62%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(42, 27, 61, 0.045) 0 1px,
-      transparent 1px 6px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(42, 27, 61, 0.045) 0 1px,
-      transparent 1px 6px
-    );
+  background-color: var(--color-neutral-soft);
 }
 
 /* The hero's floating tile swaps with the shot: it settles in rather than
@@ -110,14 +93,6 @@ select {
 }
 .tile-in {
   animation: tile-in 0.5s ease both;
-}
-
-/* A board section that continues the one above it: the same weave but not a
-   second lit highlight, so stacked sections read as one board with no seam. */
-.board-ground.board-continued {
-  background-image:
-    repeating-linear-gradient(0deg, rgba(42, 27, 61, 0.045) 0 1px, transparent 1px 6px),
-    repeating-linear-gradient(90deg, rgba(42, 27, 61, 0.045) 0 1px, transparent 1px 6px);
 }
 
 body {

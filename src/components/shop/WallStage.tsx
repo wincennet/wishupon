@@ -5,7 +5,7 @@ import type { Product } from "@/lib/types";
 import { CATEGORIES } from "@/lib/categories";
 import { PieceCard } from "./PieceCard";
 
-/** The wall: every piece in stock, pinned as its own card and sorted into
+/** The shop window: every piece in stock as its own card, grouped into
  *  columns by range. The hero above it is a separate scene (ShotReel). */
 export function WallStage({ products }: { products: Product[] }) {
     const wall = products;
@@ -89,17 +89,8 @@ export function WallStage({ products }: { products: Product[] }) {
                   : `mt-12 grid grid-cols-1 gap-y-14 lg:gap-x-7 lg:gap-y-0 ${columnClass}`
               }
             >
-              {byCategory.map(({ category, pieces }, columnIndex) => (
-                <div
-                  key={category.id}
-                  /* Columns start at slightly different heights: a real board
-                     is pinned by hand, not aligned to a baseline. */
-                  className={
-                    soleRange
-                      ? undefined
-                      : ["lg:mt-0", "lg:mt-7", "lg:mt-3", "lg:mt-10"][columnIndex % 4]
-                  }
-                >
+              {byCategory.map(({ category, pieces }) => (
+                <div key={category.id}>
                   <div className="flex items-center gap-2">
                     <span
                       aria-hidden

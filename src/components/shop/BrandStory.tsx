@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { whatsappLink } from "@/lib/constants";
-import { PushPin } from "./PushPin";
 
 /** How an order goes, told as beads on a string. The four steps are exactly
  *  what happens at checkout, so nothing here is a claim the shop cannot keep. */
@@ -43,10 +42,7 @@ export function BrandStory() {
             />
           </div>
 
-          <div className="absolute -bottom-6 right-2 w-52 rotate-[3deg] rounded-2xl bg-background px-5 pb-4 pt-6 shadow-[var(--shadow-card-lifted)] sm:-right-6 sm:w-60">
-            <span className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[45%]">
-              <PushPin size={22} />
-            </span>
+          <div className="absolute -bottom-6 right-2 w-52 rotate-[3deg] rounded-2xl bg-background px-5 py-4 shadow-[var(--shadow-card-lifted)] sm:-right-6 sm:w-60">
             <p className="font-serif text-[1.2rem] italic leading-snug text-primary">
               Wear it on an ordinary Tuesday. That is what it is for.
             </p>
