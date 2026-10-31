@@ -16,6 +16,6 @@ export function whatsappLink(message: string): string {
  *  of showing a number that would be wrong at the door. */
 export const DELIVERY = {
   courier: "TCS & similar couriers",
-  note: "Delivered anywhere in Pakistan by courier. Delivery charges are confirmed when we call you to verify your order.",
+  note: "Delivered anywhere in Pakistan by courier. We confirm your delivery details when we call to verify your order.",
   fee: null as number | null,
 } as const;

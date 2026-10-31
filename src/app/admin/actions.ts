@@ -158,3 +158,33 @@ export async function deleteFeedback(formData: FormData) {
   revalidatePath("/admin/feedback");
   revalidatePath("/");
 }
+
+/** Delete an order for good. Used for test orders and mistakes; the confirm
+ *  step lives in the orders page so it can not be pressed by accident. */
+export async function deleteOrder(formData: FormData) {
+  const supabase = await requireClient();
+  await supabase.from("orders").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin");
+}
+
+/** Save the delivery rule. Blank fields mean "not set". */
+export async function saveDelivery(formData: FormData) {
+  const supabase = await requireClient();
+
+  const num = (key: string) => {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (raw === "") return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 ? Math.round(n) : null;
+  };
+
+  await supabase.from("site_settings").upsert({
+    key: "delivery",
+    value: { fee: num("fee"), free_over: num("free_over") },
+    updated_at: new Date().toISOString(),
+  });
+
+  revalidatePath("/", "layout");
+  redirect("/admin/settings?saved=1");
+}

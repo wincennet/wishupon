@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { AdminStats } from "@/components/admin/AdminStats";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/categories";
@@ -22,7 +23,9 @@ export default async function AdminProductsPage() {
 
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <AdminStats />
+
+      <div className="mt-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl tracking-tight text-ink">
             My pieces

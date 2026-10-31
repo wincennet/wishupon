@@ -7,9 +7,11 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { formatPrice } from "@/lib/format";
 import { DELIVERY } from "@/lib/constants";
+import { useDelivery } from "@/components/cart/useDelivery";
 
 export default function CartPage() {
   const { items, setQuantity, remove, total, ready } = useCart();
+  const delivery = useDelivery(total);
 
   return (
     <>
@@ -112,14 +114,28 @@ export default function CartPage() {
               </ul>
 
               <div className="mt-6 rounded-[2px] bg-background p-5 shadow-[var(--shadow-card)]">
-                <div className="flex items-center justify-between">
+                {delivery.amount !== null && (
+                  <dl className="space-y-1.5 border-b border-neutral pb-3 text-[0.88rem] text-ink-soft">
+                    <div className="flex justify-between">
+                      <dt>Pieces</dt>
+                      <dd className="tabular-nums">{formatPrice(total)}</dd>
+                    </div>
+                    <div className="flex justify-between">
+                      <dt>Delivery</dt>
+                      <dd className="tabular-nums">
+                        {delivery.amount === 0 ? "Free" : formatPrice(delivery.amount)}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+                <div className={`flex items-center justify-between ${delivery.amount !== null ? "mt-3" : ""}`}>
                   <span className="font-display text-lg text-ink">Total</span>
                   <span className="font-display text-xl tabular-nums text-primary">
-                    {formatPrice(total)}
+                    {formatPrice(delivery.total)}
                   </span>
                 </div>
                 <p className="mt-1.5 text-[0.78rem] leading-relaxed text-ink-soft">
-                  {DELIVERY.note}
+                  {delivery.amount === null ? DELIVERY.note : delivery.text}
                 </p>
 
                 <Link

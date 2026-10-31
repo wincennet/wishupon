@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { createClient } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/format";
 import { DELIVERY } from "@/lib/constants";
+import { useDelivery } from "@/components/cart/useDelivery";
 import type { PaymentMethod } from "@/lib/types";
 
 /** Bank details are shown only after she picks bank transfer, and they are
@@ -18,6 +19,7 @@ const BANK_DETAILS_PENDING = true;
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, total, clear, ready } = useCart();
+  const delivery = useDelivery(total);
 
   const [method, setMethod] = useState<PaymentMethod>("cod");
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
@@ -37,7 +39,10 @@ export default function CheckoutPage() {
         phone: String(form.get("phone")).trim(),
         address: String(form.get("address")).trim(),
         items,
-        total_price: total,
+        total_price: delivery.total,
+        // Only written when the owner has set a delivery price, which means
+        // the settings migration (and this column) exists.
+        ...(delivery.amount ? { shipping: delivery.amount } : {}),
         payment_method: method,
         payment_reference: form.get("reference")
           ? String(form.get("reference")).trim()
@@ -171,14 +176,28 @@ export default function CheckoutPage() {
             </fieldset>
 
             <div className="border-t border-neutral pt-5">
+              {delivery.amount !== null && (
+                <dl className="mb-3 space-y-1.5 border-b border-neutral pb-3 text-[0.88rem] text-ink-soft">
+                  <div className="flex justify-between">
+                    <dt>Pieces</dt>
+                    <dd className="tabular-nums">{formatPrice(total)}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt>Delivery</dt>
+                    <dd className="tabular-nums">
+                      {delivery.amount === 0 ? "Free" : formatPrice(delivery.amount)}
+                    </dd>
+                  </div>
+                </dl>
+              )}
               <div className="flex items-center justify-between">
                 <span className="font-display text-lg text-ink">Total</span>
                 <span className="font-display text-xl tabular-nums text-primary">
-                  {formatPrice(total)}
+                  {formatPrice(delivery.total)}
                 </span>
               </div>
               <p className="mt-1.5 text-[0.78rem] leading-relaxed text-ink-soft">
-                {DELIVERY.note}
+                {delivery.amount === null ? DELIVERY.note : delivery.text}
               </p>
             </div>
 

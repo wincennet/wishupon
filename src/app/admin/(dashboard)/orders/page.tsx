@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, formatPrice } from "@/lib/format";
 import type { Order, OrderStatus } from "@/lib/types";
-import { setOrderStatus } from "@/app/admin/actions";
+import { deleteOrder, setOrderStatus } from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,13 @@ export default async function AdminOrdersPage({
   const { data } = await query;
   const orders = (data ?? []) as Order[];
 
+  // How many orders sit in each list, so the chips say what is waiting.
+  const { data: everyStatus } = await supabase.from("orders").select("status");
+  const counts: Record<string, number> = { all: everyStatus?.length ?? 0 };
+  for (const row of everyStatus ?? []) {
+    counts[row.status] = (counts[row.status] ?? 0) + 1;
+  }
+
   return (
     <>
       <h1 className="font-display text-2xl tracking-tight text-ink">Orders</h1>
@@ -52,7 +59,8 @@ export default async function AdminOrdersPage({
                 : "border border-neutral text-ink hover:border-primary hover:text-primary"
             }`}
           >
-            {option.label}
+            {option.label}{" "}
+            <span className="tabular-nums opacity-70">{counts[option.value] ?? 0}</span>
           </Link>
         ))}
       </div>
@@ -124,9 +132,60 @@ export default async function AdminOrdersPage({
                     : "Bank transfer"}
                   {order.payment_reference && ` · ref ${order.payment_reference}`}
                 </span>
-                <span className="font-display text-lg tabular-nums text-primary">
-                  {formatPrice(order.total_price)}
+                <span className="text-right">
+                  <span className="block font-display text-lg tabular-nums text-primary">
+                    {formatPrice(order.total_price)}
+                  </span>
+                  {(order as Order & { shipping?: number }).shipping ? (
+                    <span className="block text-[0.72rem] text-ink-soft">
+                      includes {formatPrice((order as Order & { shipping?: number }).shipping as number)} delivery
+                    </span>
+                  ) : null}
                 </span>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-neutral pt-3">
+                <span className="text-[0.78rem] text-ink-soft">Move to:</span>
+                {(["pending", "confirmed", "fulfilled", "cancelled"] as OrderStatus[]).map(
+                  (st) => (
+                    <form key={st} action={setOrderStatus}>
+                      <input type="hidden" name="id" value={order.id} />
+                      <input type="hidden" name="status" value={st} />
+                      <button
+                        type="submit"
+                        disabled={order.status === st}
+                        className={`min-h-9 rounded-full px-3.5 text-[0.76rem] transition-colors ${
+                          order.status === st
+                            ? "bg-primary text-background"
+                            : "border border-ink/15 text-ink hover:border-primary hover:text-primary"
+                        }`}
+                      >
+                        {st === "fulfilled" ? "posted" : st}
+                      </button>
+                    </form>
+                  )
+                )}
+
+                <details className="ml-auto">
+                  <summary className="flex min-h-9 cursor-pointer list-none items-center rounded-full px-3 text-[0.76rem] text-err hover:bg-black/5">
+                    Delete
+                  </summary>
+                  <form
+                    action={deleteOrder}
+                    className="absolute right-4 z-10 mt-1 w-60 rounded-xl border border-ink/10 bg-background p-3 shadow-[var(--shadow-card)]"
+                  >
+                    <input type="hidden" name="id" value={order.id} />
+                    <p className="text-[0.8rem] leading-snug text-ink">
+                      Delete this order for good? This cannot be undone.
+                    </p>
+                    <button
+                      type="submit"
+                      className="mt-3 min-h-9 rounded-lg bg-err px-4 text-[0.8rem] font-medium text-ink"
+                    >
+                      Yes, delete it
+                    </button>
+                  </form>
+                </details>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
